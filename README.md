@@ -7,6 +7,9 @@ Version 2.0 is a port from Allegro 4 / Dev-C++ to **Allegro 5.2** and
 **Visual Studio 2026** (x64). The original game text and story are in
 [readme.txt](readme.txt).
 
+The 1996 original (MFC/WinG) and its level designer, CLD, are kept in
+[history/](history/README.md).
+
 ## Building (Visual Studio 2026)
 
 1. Open `Cylu.sln`.
