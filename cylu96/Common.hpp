@@ -62,7 +62,7 @@
 #define RESOURCE_SPRITES		10000
 #define RESOURCE_MASKS			20000
 
-#define FRAME_RATE				250		//	2026: milliseconds per tick, was 60 (too fast on modern PCs)
+#define FRAME_RATE				150		//	2026: milliseconds per tick, was 60 (too fast on modern PCs)
 
 #define MAX_FORCEFIELDS			31
 #define MAX_TRANSPORTERS		10
