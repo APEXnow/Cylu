@@ -108,6 +108,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <!-- Windows libraries used by the static Allegro image and dialog add-ons -->
       <AdditionalDependencies>gdiplus.lib;comctl32.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <!-- The static Allegro/libpng/zlib/jpeg/webp libraries ship without .pdb files;
+           LNK4099 just reports that, so it is suppressed -->
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
