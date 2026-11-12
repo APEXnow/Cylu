@@ -291,7 +291,9 @@ void CMaze::CloseFile()
 {
     if (GetFile())
     {
-		GetFile()->Flush();
+		//	2026: no Flush() here.  Levels are now opened read-only, and
+		//	flushing a read-only file throws (access denied).  SaveMaze
+		//	flushes as it writes, and Close() flushes anyway.
 		GetFile()->Close();
         delete GetFile();
         SetFile( (CFile*)0 );
