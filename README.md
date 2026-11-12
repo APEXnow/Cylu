@@ -72,10 +72,25 @@ copy in `bin\`. The build overwrites the copy in `bin\` every time.
 | Grid / attribute numbers | **G** / **A** |
 | Parse Level | **F7**: statistics plus a list of problems; double-click one to jump to it |
 | Test in Cylu | **F5**: plays the level being edited in the game, without saving it |
+| Test in Cylu 1996 | **Shift+F5**: the same, in the original 1996 game |
 
 Placing the droid moves it, because a level has exactly one starting point.
 `cld\levelcheck.cpp` holds the level checks. It's plain C++, so it can be
 tested away from MFC.
+
+## Cylu 1996
+
+`cylu96\` rebuilds the original Windows 95 game from 1996 (MFC and GDI), the
+version CLD was written for, as `cylu96.exe`. The untouched source stays in
+`history\1996\CYLU`. `cylu96\` holds lightly modernised copies, with every change
+marked `2026`. Its bitmaps, animation script (`SPRITES.SSF`) and level come
+straight from the archive. It needs MFC, like CLD.
+
+Start a game with **File > New Game**. Arrows move, **Shift** selects a pocket,
+**P** picks up, **D** drops and **U** uses. Chips, objects and refuel cells are
+used at the base computer: stand on the start square facing north. Run
+`cylu96.exe <level.cld>` to play another level. CLD's **Test in Cylu 1996**
+(Shift+F5) does this for the level being edited.
 
 ## Project layout
 
@@ -87,6 +102,7 @@ tested away from MFC.
 | `gfx.*` | Drawing helpers and the sprite loader |
 | `objects.h` | Object numbers and attributes, shared by the game and CLD |
 | `cld\` | CLD, the level designer (MFC) |
+| `cylu96\` | The 1996 game, rebuilt (MFC) |
 | `cyluobjs.h` | Sprite numbers (`CYLU_*`), matching `data\manifest.txt` |
 | `data\sprites\*.png` | The 187 sprites, converted from the old `cylu.dat` |
 | `data\level.cld` | The level map |

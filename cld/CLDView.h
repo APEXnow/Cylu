@@ -83,6 +83,7 @@ protected:
 	void PaintLine( CPoint ptFrom, CPoint ptTo, BOOL bErase );
 	void PickCell( CPoint ptCell );
 	void SetSelection( int nObject, int nAttrib );
+	void LaunchGame( LPCTSTR szExe, LPCTSTR szParamFormat, LPCTSTR szProject );
 
 // Generated message map functions
 protected:
@@ -109,6 +110,7 @@ protected:
 	afx_msg void OnParseLevel();
 	afx_msg void OnUpdateParseLevel(CCmdUI* pCmdUI);
 	afx_msg void OnTestLevel();
+	afx_msg void OnTestLevel96();
 	afx_msg void OnUpdateTestLevel(CCmdUI* pCmdUI);
 	afx_msg void OnPaletteObject(UINT nID);
 	afx_msg void OnUpdatePaletteObject(CCmdUI* pCmdUI);

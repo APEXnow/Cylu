@@ -1,0 +1,402 @@
+// 2026: the 1996 resource script, built from history\1996\CYLU (see cylu96.vcxproj).
+// Only the About box and the (C) sign have changed.
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+10035                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\Scpu.bmp"
+10040                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\Sfuel.bmp"
+10050                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\Srfl.bmp"
+10060                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\Srtb.bmp"
+20035                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\Mcpu.bmp"
+20040                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\Mfuel.bmp"
+20050                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\Mrfl.bmp"
+20060                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\Mrtb.bmp"
+10002                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw2.bmp"
+10003                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw3.bmp"
+10004                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw4.bmp"
+10005                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw5.bmp"
+10010                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\Stele0.bmp"
+10011                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\Stele1.bmp"
+10012                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\Stele2.bmp"
+20002                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mw2.bmp"
+20003                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mw3.bmp"
+20004                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mw4.bmp"
+20005                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mw5.bmp"
+20010                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtele0.bmp"
+20011                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtele1.bmp"
+20012                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtele2.bmp"
+10020                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\stree0.bmp"
+10021                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\stree1.bmp"
+10022                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\stree2.bmp"
+10023                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\stree3.bmp"
+20020                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtree0.bmp"
+20021                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtree1.bmp"
+20022                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtree2.bmp"
+20023                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mtree3.bmp"
+10070                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\Ssphere.bmp"
+20070                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\Msphere.bmp"
+20080                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mbook.bmp"
+10080                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\sbook.bmp"
+10090                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\scalc.bmp"
+20090                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mcalc.bmp"
+20100                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mdisk.bmp"
+10100                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\sdisk.bmp"
+10110                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\spencil.bmp"
+20110                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mpencil.bmp"
+10006                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw6.bmp"
+20006                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw6.bmp"
+10025                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sc.bmp"
+10026                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sy.bmp"
+10027                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sl.bmp"
+10028                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\su.bmp"
+20025                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mc.bmp"
+20026                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\my.bmp"
+20027                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\ml.bmp"
+20028                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mu.bmp"
+10015                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\scmptr1.bmp"
+10016                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\scmptr2.bmp"
+10017                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\scmptr3.bmp"
+10018                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\scmptr4.bmp"
+20015                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mcmptr.bmp"
+10000                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\Sw0.bmp"
+20000                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\Mw0.bmp"
+10001                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\Sw1.bmp"
+20001                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\Mw1.bmp"
+10120                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\skey.bmp"
+20120                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mkey.bmp"
+10130                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\OBJECTS\\sbottle.bmp"
+20130                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\OBJECTS\\mbottle.bmp"
+10030                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sfield0.bmp"
+10031                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sfield1.bmp"
+10032                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sfield2.bmp"
+10033                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sfield3.bmp"
+20030                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mfield0.bmp"
+20031                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mfield1.bmp"
+20032                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mfield2.bmp"
+20033                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mfield3.bmp"
+20007                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\WALLS\\mw7.bmp"
+10008                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw8.bmp"
+20008                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\Mw8.bmp"
+10007                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\SW7.BMP"
+20016                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mcmptr.bmp"
+20017                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mcmptr.bmp"
+20018                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mcmptr.bmp"
+10009                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw9.bmp"
+20009                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw9.bmp"
+10131                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw10.bmp"
+20131                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw10.bmp"
+10500                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroidn0.bmp"
+10501                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroidn1.bmp"
+10502                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroide0.bmp"
+10503                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroide1.bmp"
+10504                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroids0.bmp"
+10505                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroids1.bmp"
+10506                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroidw0.bmp"
+10507                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\droid\\Sdroidw1.bmp"
+20500                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroidn0.bmp"
+20501                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroidn1.bmp"
+20502                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroide0.bmp"
+20503                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroide1.bmp"
+20504                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroids0.bmp"
+20505                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroids1.bmp"
+20506                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroidw0.bmp"
+20507                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\droid\\Mdroidw1.bmp"
+10132                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw11.bmp"
+10133                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\walls\\sw12.bmp"
+20132                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw11.bmp"
+20133                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw12.bmp"
+10134                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sw13.bmp"
+20134                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw13.bmp"
+10135                   BITMAP  DISCARDABLE     "SPRITES\\SPRITE\\WALLS\\sw14.bmp"
+20135                   BITMAP  DISCARDABLE     "SPRITES\\MASK\\walls\\mw14.bmp"
+IDB_OBJECT_BORDER       BITMAP  DISCARDABLE     "SPRITES\\Objbord.bmp"
+IDB_POCKET_SELECT       BITMAP  DISCARDABLE     "SPRITES\\obsel.bmp"
+IDB_LOGO                BITMAP  DISCARDABLE     "SPRITES\\Logo.bmp"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""res\\Cylu.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "\r\n"
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "#include ""afxres.rc""  \t// Standard components\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Cylu.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "New Game",                    IDM_NEW_GAME
+        MENUITEM "End Game",                    IDM_END_GAME
+        MENUITEM SEPARATOR
+        MENUITEM "Pause",                       IDM_PAUSE_GAME
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About Cylu...",              ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  34, 22, 230, 118
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Cylu"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "Cylu Version 1.0",IDC_STATIC,40,10,119,8
+    LTEXT           "The original 1996 Windows 95 version, by Paul S.J.Millard. Rebuilt in 2026 for Visual Studio 2026.",IDC_STATIC,40,22,180,18
+    LTEXT           "Keys:  arrows move,  Shift selects a pocket,  P picks up,  D drops,  U uses the object in the selected pocket.",IDC_STATIC,40,46,180,18
+    LTEXT           "Use chips, objects and refuel cells at the base computer: stand on the start square facing north.",IDC_STATIC,40,70,180,18
+    DEFPUSHBUTTON   "OK",IDOK,189,97,32,14,WS_GROUP
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "CYLU MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "CYLU\0"
+            VALUE "LegalCopyright", "Copyright (C) 1995\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "CYLU.EXE\0"
+            VALUE "ProductName", "CYLU Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "Cylu\n\nCylu\n\n\nCylu.Document\nCylu Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "Cylu"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "res\Cylu.rc2"  // non-Microsoft Visual C++ edited resources
+
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+#include "afxres.rc"  	// Standard components
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

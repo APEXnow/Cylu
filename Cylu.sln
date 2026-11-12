@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cylu", "Cylu.vcxproj", "{37
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLD", "cld\CLD.vcxproj", "{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cylu96", "cylu96\cylu96.vcxproj", "{E8D32362-7BCB-4E4F-856F-4423844E5388}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F73478AF-E20A-4CBC-8545-FB5932687EF5}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -27,6 +29,10 @@ Global
 		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Debug|x64.Build.0 = Debug|x64
 		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Release|x64.ActiveCfg = Release|x64
 		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Release|x64.Build.0 = Release|x64
+		{E8D32362-7BCB-4E4F-856F-4423844E5388}.Debug|x64.ActiveCfg = Debug|x64
+		{E8D32362-7BCB-4E4F-856F-4423844E5388}.Debug|x64.Build.0 = Debug|x64
+		{E8D32362-7BCB-4E4F-856F-4423844E5388}.Release|x64.ActiveCfg = Release|x64
+		{E8D32362-7BCB-4E4F-856F-4423844E5388}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

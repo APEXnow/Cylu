@@ -117,6 +117,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Parse Le&vel\tF7",            IDM_PARSE_LEVEL
         MENUITEM "&Test in Cylu\tF5",           IDM_TEST_LEVEL
+        MENUITEM "Test in Cylu &1996\tShift+F5", IDM_TEST_LEVEL_96
     END
     POPUP "&View"
     BEGIN
@@ -167,6 +168,7 @@ BEGIN
     0xBD,           IDM_ZOOM_OUT,           VIRTKEY, CONTROL, NOINVERT
     0x6D,           IDM_ZOOM_OUT,           VIRTKEY, CONTROL, NOINVERT
     VK_F5,          IDM_TEST_LEVEL,         VIRTKEY, NOINVERT
+    VK_F5,          IDM_TEST_LEVEL_96,      VIRTKEY, SHIFT, NOINVERT
     VK_F7,          IDM_PARSE_LEVEL,        VIRTKEY, NOINVERT
 END
 
@@ -311,6 +313,7 @@ BEGIN
     IDM_ZOOM_IN             "Make the tiles bigger (or Ctrl+mouse wheel)\nZoom In"
     IDM_ZOOM_OUT            "Make the tiles smaller (or Ctrl+mouse wheel)\nZoom Out"
     IDM_TEST_LEVEL          "Play this level in Cylu without saving it\nTest in Cylu (F5)"
+    IDM_TEST_LEVEL_96       "Play this level in the original 1996 Cylu (start it with File > New Game)\nTest in Cylu 1996 (Shift+F5)"
     IDM_ATTRIB_UP           "Next attribute for the selected object\nNext Attribute (])"
     IDM_ATTRIB_DOWN         "Previous attribute for the selected object\nPrevious Attribute ([)"
 END

@@ -4,14 +4,16 @@ Cylu has been written three times:
 
 | Version | Year | Platform | Graphics | Where |
 |---|---|---|---|---|
-| 1 | 1996 | Windows 95, MFC + WinG, Visual C++ 4 (later opened in VC++ 6) | Hand-drawn 8-bit sprites with separate masks | [`1996/CYLU`](1996/CYLU) |
+| 1 | 1996 | Windows 95, MFC + GDI (WinG optional), Visual C++ 4 (later opened in VC++ 6) | Hand-drawn 8-bit sprites with separate masks | [`1996/CYLU`](1996/CYLU), playable again as [`cylu96`](../cylu96) |
 | 2 | 2001 | DOS/Windows/Linux, Allegro 4, DJGPP then Dev-C++ | Pre-rendered with POV-Ray and POVLab | First commit of this repo |
 | 3 | 2026 | Windows 11 x64, Allegro 5.2, Visual Studio 2026 | Version 2's renders as PNGs | Root of this repo |
 
 ## 1996: the original Windows game (`1996/CYLU`)
 
-- MFC document/view application (`CCyluApp`, `CCyluView`) using **WinG** for
-  fast back-buffer drawing and an 8-bit palette (`PALETTE.PAL`).
+- MFC document/view application (`CCyluApp`, `CCyluView`) with an 8-bit
+  palette (`PALETTE.PAL`). **WinG** support for fast back-buffer drawing is
+  written but switched off (`_USE_WING_`), so the game draws with plain GDI.
+  That's why it can be rebuilt today (see `cylu96`).
 - Each sprite is a pair of bitmaps under `SPRITES/SPRITE` and `SPRITES/MASK`,
   drawn with the classic mask-then-sprite blit for transparency.
 - `SPRITES.SSF` is a small animation script
@@ -22,6 +24,8 @@ Cylu has been written three times:
   in every later version.
 
 ## 1996: CLD, the Cylu Level Designer (`1996/CLD`)
+
+(Rebuilt and extended for 2026 in [`cld`](../cld).)
 
 An MFC editor for `.CLD` level files, with a palette of 20×20 tile icons
 (`BITMAPS/*.BMP`) for walls, forcefields, keys, teleporters, fuel, CPUs, objects

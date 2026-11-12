@@ -53,6 +53,8 @@ BEGIN_MESSAGE_MAP(CCLDView, CScrollView)
 	ON_UPDATE_COMMAND_UI(IDM_PARSE_LEVEL, &CCLDView::OnUpdateParseLevel)
 	ON_COMMAND(IDM_TEST_LEVEL, &CCLDView::OnTestLevel)
 	ON_UPDATE_COMMAND_UI(IDM_TEST_LEVEL, &CCLDView::OnUpdateTestLevel)
+	ON_COMMAND(IDM_TEST_LEVEL_96, &CCLDView::OnTestLevel96)
+	ON_UPDATE_COMMAND_UI(IDM_TEST_LEVEL_96, &CCLDView::OnUpdateTestLevel)
 	ON_COMMAND_RANGE(IDM_OBJECT_FIRST, IDM_OBJECT_LAST, &CCLDView::OnPaletteObject)
 	ON_UPDATE_COMMAND_UI_RANGE(IDM_OBJECT_FIRST, IDM_OBJECT_LAST, &CCLDView::OnUpdatePaletteObject)
 	ON_UPDATE_COMMAND_UI(ID_INDICATOR_CELL, &CCLDView::OnUpdateIndicatorCell)
@@ -1031,38 +1033,33 @@ void CCLDView::OnUpdateParseLevel(CCmdUI* pCmdUI)
 }
 
 /*
-	Function:		OnTestLevel
-	Description:	Saves the level to a temporary file and starts the game
-					(cylu.exe, in the same folder as CLD) with -level
+	Function:		LaunchGame
+	Inputs:			szExe				- Game executable, e.g. cylu.exe
+					szParamFormat		- Command line, %s is the level file
+					szProject			- Project to build if it's missing
+	Description:	Saves the level to a temporary file and starts a game
+					from the same folder as CLD to play it
 */
-void CCLDView::OnTestLevel()
+void CCLDView::LaunchGame( LPCTSTR szExe, LPCTSTR szParamFormat, LPCTSTR szProject )
 {
 	CCLDDoc *pDoc = GetDocument();
-	LEVELSTATS Stats;
-	std::vector<LEVELISSUE> Issues;
 	TCHAR szPath[ MAX_PATH ];
 	CString cstrFolder, cstrGame, cstrLevel, cstrParams, cstrMessage;
 	HINSTANCE hResult;
 	int nSlash;
 
-	if( CheckLevel( *pDoc->GetMaze(), Stats, Issues ) > 0 )
-	{
-		if( AfxMessageBox( _T("Parse Level found errors that may stop this level playing.\n\nTest it anyway?"),
-			MB_ICONQUESTION | MB_YESNO ) != IDYES )
-			return;
-	}
-
-	//	The game is built to the same folder as CLD
+	//	The games are built to the same folder as CLD
 	if( !GetModuleFileName( NULL, szPath, MAX_PATH ) )
 		return;
 	cstrFolder = szPath;
 	nSlash = cstrFolder.ReverseFind( _T('\\') );
 	cstrFolder = cstrFolder.Left( nSlash + 1 );
-	cstrGame = cstrFolder + _T("cylu.exe");
+	cstrGame = cstrFolder + szExe;
 
 	if( GetFileAttributes( cstrGame ) == INVALID_FILE_ATTRIBUTES )
 	{
-		cstrMessage.Format( _T("Couldn't find the game at\n%s\n\nBuild the Cylu project (same configuration) first."), (LPCTSTR)cstrGame );
+		cstrMessage.Format( _T("Couldn't find the game at\n%s\n\nBuild the %s project (same configuration) first."),
+			(LPCTSTR)cstrGame, szProject );
 		AfxMessageBox( cstrMessage, MB_ICONEXCLAMATION );
 		return;
 	}
@@ -1079,7 +1076,7 @@ void CCLDView::OnTestLevel()
 		return;
 	}
 
-	cstrParams.Format( _T("-window -level \"%s\""), (LPCTSTR)cstrLevel );
+	cstrParams.Format( szParamFormat, (LPCTSTR)cstrLevel );
 
 	hResult = ShellExecute( GetSafeHwnd(), _T("open"), cstrGame, cstrParams, cstrFolder, SW_SHOWNORMAL );
 	if( (INT_PTR)hResult <= 32 )
@@ -1087,6 +1084,36 @@ void CCLDView::OnTestLevel()
 		cstrMessage.Format( _T("Unable to start\n%s"), (LPCTSTR)cstrGame );
 		AfxMessageBox( cstrMessage, MB_ICONEXCLAMATION );
 	}
+}
+
+/*
+	Function:		OnTestLevel
+	Description:	F5 - play the level in the current game
+*/
+void CCLDView::OnTestLevel()
+{
+	LEVELSTATS Stats;
+	std::vector<LEVELISSUE> Issues;
+
+	if( CheckLevel( *GetDocument()->GetMaze(), Stats, Issues ) > 0 )
+	{
+		if( AfxMessageBox( _T("Parse Level found errors that may stop this level playing.\n\nTest it anyway?"),
+			MB_ICONQUESTION | MB_YESNO ) != IDYES )
+			return;
+	}
+
+	LaunchGame( _T("cylu.exe"), _T("-window -level \"%s\""), _T("Cylu") );
+}
+
+/*
+	Function:		OnTestLevel96
+	Description:	Shift+F5 - play the level in the original 1996 game,
+					the one CLD was written for.  Start it with File > New
+					Game; the level is its first command line argument.
+*/
+void CCLDView::OnTestLevel96()
+{
+	LaunchGame( _T("cylu96.exe"), _T("\"%s\""), _T("Cylu96") );
 }
 
 void CCLDView::OnUpdateTestLevel(CCmdUI* pCmdUI)

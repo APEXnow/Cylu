@@ -36,6 +36,7 @@
 #define IDM_TEST_LEVEL                  32792
 #define IDM_ATTRIB_UP                   32793
 #define IDM_ATTRIB_DOWN                 32794
+#define IDM_TEST_LEVEL_96               32795
 
 // Object palette buttons, one per object number (1 = wall ... 12 = droid)
 #define IDM_OBJECT_FIRST                33000
@@ -54,7 +55,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
-#define _APS_NEXT_COMMAND_VALUE         32795
+#define _APS_NEXT_COMMAND_VALUE         32796
 #define _APS_NEXT_CONTROL_VALUE         1010
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
