@@ -32,7 +32,7 @@
 #define ERROR_SAVEGAME			12
 #define ERROR_LOADGAME			13
 
-const char *ErrorText( int nError )
+inline const char *ErrorText( int nError )
 {
 	switch( nError )
 	{
@@ -62,6 +62,18 @@ const char *ErrorText( int nError )
 
 		case ERROR_LOWMEMORY:
 			return "Low memory";
+
+		case ERROR_SOUND:
+			return "Unable to initialise sound";
+
+		case ERROR_SAVEMAZE:
+			return "Failed to save level data";
+
+		case ERROR_SAVEGAME:
+			return "Failed to save game";
+
+		case ERROR_LOADGAME:
+			return "Failed to load saved game";
 
 		default:
 			return "Unknown error";

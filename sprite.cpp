@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 #include <memory.h>
-#include <allegro.h>
 
 #include "cylu.h"
 #include "sprite.h"

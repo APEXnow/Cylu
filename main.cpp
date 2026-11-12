@@ -20,13 +20,12 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <ctype.h>
 
-#ifdef _DOS
-#include <conio.h>
-#endif
+#include <allegro5/allegro.h>
 
-#include <allegro.h>
-
+#include "./platform.h"
+#include "./gfx.h"
 #include "./cylu.h"
 #include "./sprite.h"
 #include "./anim.h"
@@ -40,25 +39,27 @@
 BOOL g_bSound = TRUE;
 BOOL g_bRotate = TRUE;
 BOOL g_bVsync = TRUE;
+#ifdef _DEBUG
+BOOL g_bFullscreen = FALSE;				//	Start in a window when debugging
+#else
+BOOL g_bFullscreen = TRUE;
+#endif
 
 char szLastError[255] = { "" };
 
 BOOL g_bInitialised = FALSE;			//	Used by initial debug text
 
 CMaze *g_lpCMaze = NULL;				//	Level data
-DATAFILE *g_pDataFile = NULL;			//	Primary data file
 
 GameState g_enuGameState;				//	Game state
 BOOL g_bMenu = FALSE;					//	Toggles main menu on and off
 BOOL g_bEndGame = FALSE;				//	For end game sequence
-BITMAP *g_pBackBuffer = NULL;			//	Rendering buffer
-BITMAP *g_pCopy = NULL;					//	Copy used for end game sequence
+ALLEGRO_BITMAP *g_pBackBuffer = NULL;			//	Rendering buffer
+ALLEGRO_BITMAP *g_pCopy = NULL;					//	Copy used for end game sequence
 int g_nTimer;							//	Global game timer
 CAnim *g_pAnim = NULL;					//	Animation class
 int g_nMenuPos = 0;						//	Menu cursor position
 BOOL g_bMenuShown = FALSE;
-SAMPLE *g_pSampleCursor = NULL;			//	Cursor movement sample
-MIDI *g_pMusic = NULL;					//	Pointer to midi music file
 
 BOOL g_bInstructionsShown = FALSE;
 int g_nCurPage = 0;						//	Current page
@@ -272,52 +273,40 @@ int g_pSpriteList[] = 	{ 4, CYLU_LOGOC, CYLU_LOGOY, CYLU_LOGOL, CYLU_LOGOU, 20, 
 int main( int argc, char **argv )
 {
 	int nRet = 0;
-	char szPassword[10];
-#ifdef _WINDOWS32
-	HWND hWnd;
-#endif
+	char szWork[ 512 ];
 
 	CmdLine( argc, argv);
 
 	//	Seed random number generator
-	srand( time( NULL ) );
-
-	text_mode( -1 );
+	srand( (unsigned int)time( NULL ) );
 
 	nRet = Initialise();
 	if( nRet )
 		goto function_exit;
 
-	//	Put redundent code between assignments to prevent likely reverse engineering
-	
-	szPassword[2] = 'L';
-	szPassword[0] = 'N';
-	szPassword[1] = 'U';
-	szPassword[3] = 'U';
-	szPassword[4] = '\0';
-
-	packfile_password( szPassword );
-
-	g_pDataFile = load_datafile( DATA_FILE_NAME24 );
-
-	if( !g_pDataFile )
+	//	Sprites converted from the original cylu.dat (see tools/extract_dat.py)
+	if( !LoadSpriteData( SPRITE_MANIFEST, szLastError, sizeof( szLastError ) ) )
 	{
 		nRet = ERROR_DATAFILE;
 		goto function_exit;
 	}
 
-	NewGame();	//	Initialise all globals
+	nRet = NewGame();	//	Initialise all globals
+	if( nRet )
+		goto function_exit;
 
 	nRet = LoadSprites();
 	if( nRet )
 		goto function_exit;
 
-	textprintf_centre( screen, font, GRX_WIDTH/2, GRX_HEIGHT - 10, COLOR_WHITE, "Press any key to proceed" );
+	GfxTextfCentre( GRX_WIDTH/2, GRX_HEIGHT - 10, COLOR_WHITE, "Press any key to proceed" );
 
-	text_mode( 0 );
+	while( !PlatformKeyPressed() && !PlatformQuitRequested() )
+		PlatformPresent( g_pBackBuffer );
+ 	PlatformClearKeyBuf();
 
-	while( !keypressed() );
- 	clear_keybuf();
+	if( PlatformQuitRequested() )
+		goto function_exit;
 
 #ifdef _DEBUG_
 	goto function_exit;
@@ -335,22 +324,20 @@ int main( int argc, char **argv )
 
 function_exit:
 
-	Terminate();
-
 	if( nRet )
 	{
-#ifdef _WINDOWS32
-		hWnd = win_get_window();
-		MessageBox( hWnd, (LPCSTR)ErrorText(nRet), "Cylu Error", MB_OK | MB_ICONEXCLAMATION );
-#else
-		printf( "\r\nError: %d - %s : %s\r\n", nRet, ErrorText(nRet), szLastError );
-#endif
+		if( szLastError[0] )
+			snprintf( szWork, sizeof( szWork ), "%s\n\n%s", ErrorText( nRet ), szLastError );
+		else
+			snprintf( szWork, sizeof( szWork ), "%s", ErrorText( nRet ) );
+
+		PlatformErrorBox( "Cylu Error", szWork );
 	}
+
+	Terminate();
 
 	return nRet;
 }
-
-END_OF_MAIN();
 
 /*
 	Function:		CmdLine
@@ -360,6 +347,17 @@ END_OF_MAIN();
 
 	Description:	Scans the command line options
 */
+static int StrICmp( const char *szA, const char *szB )
+{
+	while( *szA && tolower( (unsigned char)*szA ) == tolower( (unsigned char)*szB ) )
+	{
+		szA++;
+		szB++;
+	}
+
+	return tolower( (unsigned char)*szA ) - tolower( (unsigned char)*szB );
+}
+
 int CmdLine( int argc, char **argv )
 {
 	int nRet = 0;
@@ -367,12 +365,16 @@ int CmdLine( int argc, char **argv )
 
 	for( i=0; i<argc; i++ )
 	{
-		if( stricmp( argv[i], "-NOSOUND" ) == 0 )
+		if( StrICmp( argv[i], "-NOSOUND" ) == 0 )
 			g_bSound = FALSE;
-		if( stricmp( argv[i], "-NOROTATE" ) == 0 )
+		if( StrICmp( argv[i], "-NOROTATE" ) == 0 )
 			g_bRotate = FALSE;
-		if( stricmp( argv[i], "-NOVSYNC" ) == 0 )
+		if( StrICmp( argv[i], "-NOVSYNC" ) == 0 )
 			g_bVsync = FALSE;
+		if( StrICmp( argv[i], "-WINDOW" ) == 0 )
+			g_bFullscreen = FALSE;
+		if( StrICmp( argv[i], "-FULLSCREEN" ) == 0 )
+			g_bFullscreen = TRUE;
 	}
 
 	return nRet;
@@ -392,20 +394,16 @@ int Initialise( void )
 {
 	int nRet = 0;
 	int i;
-#ifdef _DEBUG_
-	char szWork[255];
-#endif
+	unsigned int nVersion;
 
 #ifdef _DEBUG_
 	char szChar[2] = { 0, 0 };
 	int x, y, c;
 #endif
 
-//	set_config_file( CONFIG_FILE );
-
-	if( allegro_init() )
+	if( !PlatformInit( GRX_WIDTH, GRX_HEIGHT, g_bFullscreen ? true : false, g_bVsync ? true : false,
+		szLastError, sizeof( szLastError ) ) )
 	{
-		strcpy( szLastError, allegro_error );
 		nRet = ERROR_ALLEGRO;
 		goto function_exit;
 	}
@@ -413,19 +411,18 @@ int Initialise( void )
 #ifndef _NOBITS_
 	if( InitGraphics() )
 	{
-		strcpy( szLastError, allegro_error );
 		nRet = ERROR_INITGRAPHICS;
 		goto function_exit;
 	}
 
 	for( i=0; i<GRX_WIDTH; i++ )
-		rectfill( screen, i, 0, i, GRX_HEIGHT, makecol( 0, 0, 255-(int)((float)i * ((float)256/(float)GRX_WIDTH)) ) );
+		RectFill( i, 0, i, GRX_HEIGHT, al_map_rgb( 0, 0, 255-(int)((float)i * ((float)256/(float)GRX_WIDTH)) ) );
 
 	//	Main app ver
 	for( i=0; i<TEXT_STEP; i++ )
 	{
-		rectfill( screen, 0, i, GRX_WIDTH, i, makecol( 63, 63, i * (256/TEXT_STEP) ) );
-		rectfill( screen, 0, GRX_HEIGHT - (TEXT_STEP - i), GRX_WIDTH, GRX_HEIGHT - (TEXT_STEP - i), makecol( i * (256/TEXT_STEP), 63, 63 ) );
+		RectFill( 0, i, GRX_WIDTH, i, al_map_rgb( 63, 63, i * (256/TEXT_STEP) ) );
+		RectFill( 0, GRX_HEIGHT - (TEXT_STEP - i), GRX_WIDTH, GRX_HEIGHT - (TEXT_STEP - i), al_map_rgb( i * (256/TEXT_STEP), 63, 63 ) );
 	}
 
 #ifdef _DEBUG_
@@ -434,7 +431,7 @@ int Initialise( void )
 	for( c=32; c<256; c++ )
 	{
 		szChar[0] = c;
-		textprintf( screen, font, 10 + (x*10), (GRX_HEIGHT - 350)+(y*10), makecol( 255,255,255 ), szChar );
+		GfxTextf( 10 + (x*10), (GRX_HEIGHT - 350)+(y*10), al_map_rgb( 255,255,255 ), szChar );
 		x++;
 		if( x==16 )
 		{
@@ -447,156 +444,67 @@ int Initialise( void )
 #ifdef _DESIGN_MODE_
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 0, g_nTextY, COLOR_GREEN, "DESIGN MODE - Game functionality disabled" );
+		GfxTextf( 0, g_nTextY, COLOR_GREEN, "DESIGN MODE - Game functionality disabled" );
 		g_nTextY = g_nTextY + TEXT_STEP*2;
 	}
 #endif
 
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "%64s: Version %01d.%02d%c", " ", VER_MAJOR, VER_MINOR, VER_RELEASE );
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, " %s", VER_TITLE );
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "%64s: Version %01d.%02d%c", " ", VER_MAJOR, VER_MINOR, VER_RELEASE );
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, " %s", VER_TITLE );
 		g_nTextY = g_nTextY + (TEXT_STEP*2);
 	}
 
 #ifdef _SHAREWARE_
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 0, g_nTextY, COLOR_GREEN, "UNREGISTERED VERSION - Limited playability" );
+		GfxTextf( 0, g_nTextY, COLOR_GREEN, "UNREGISTERED VERSION - Limited playability" );
 		g_nTextY = g_nTextY + TEXT_STEP*2;
 	}
 #endif
 
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Please wait - Initialising System" );
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Please wait - Initialising System" );
 		g_nTextY = g_nTextY + TEXT_STEP;
-	}
 
-	if( !g_bInitialised )
-	{
-		switch( os_type )
-		{
-			case OSTYPE_UNKNOWN:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Unknown" );
-				break;
-			case OSTYPE_WIN3:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Microsoft Windows 3.1" );
-				break;
-			case OSTYPE_WIN95:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Microsoft Windows 95" );
-				break;
-			case OSTYPE_WIN98:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Microsoft Windows 98" );
-				break;
-			case OSTYPE_WINNT:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Microsoft Windows NT" );
-				break;
-			case OSTYPE_WIN2000:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Microsoft Windows 2000" );
-				break;
-			case OSTYPE_OS2:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: OS2" );
-				break;
-			case OSTYPE_WARP:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: OS2 Warp" );
-				break;
-			case OSTYPE_DOSEMU:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: DOS Environment" );
-				break;
-			case OSTYPE_OPENDOS:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Open DOS" );
-				break;
-			case OSTYPE_LINUX:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Linux" );
-				break;
-			case OSTYPE_FREEBSD:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: FreeBSD" );
-				break;
-			case OSTYPE_UNIX:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Unknown Unix Variant" );
-				break;
-			case OSTYPE_BEOS:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: BeOS" );
-				break;
-			case OSTYPE_QNX:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: QNX" );
-				break;
-			case OSTYPE_MACOS:
-				textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Operating System: Macintosh Operating System" );
-				break;
-		}
+		nVersion = al_get_allegro_version();
 
+		g_nTextY = g_nTextY + TEXT_STEP;
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Platform: %s", PLATFORM_NAME );
+		g_nTextY = g_nTextY + TEXT_STEP;
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Library: Allegro %d.%d.%d", nVersion >> 24, (nVersion >> 16) & 255, (nVersion >> 8) & 255 );
 		g_nTextY = g_nTextY + (TEXT_STEP*2);
-		
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Platform: %s", ALLEGRO_PLATFORM_STR );
-		g_nTextY = g_nTextY + (TEXT_STEP*2);
-	}
 
-	//	Initialising keyboard
-	if( !g_bInitialised )
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Initialising Keyboard:" );
+		//	Keyboard and timers are set up by PlatformInit
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Initialising Keyboard:" );
+		GfxTextf( 300, g_nTextY, COLOR_GREEN, "Successful" );
+		g_nTextY = g_nTextY + TEXT_STEP;
 
-	if( install_keyboard() )
-	{
-		strcpy( szLastError, allegro_error );
-		nRet = ERROR_ALLEGRO;
-		if( !g_bInitialised )
-			textprintf( screen, font, 300, g_nTextY, COLOR_WHITE, "%s", allegro_error );
-		goto function_exit;
-	}
-	else
-	{
-		if( !g_bInitialised )
-		{
-			textprintf( screen, font, 300, g_nTextY, COLOR_GREEN, "Successful" );
-			g_nTextY = g_nTextY + TEXT_STEP;
-		}
-	}
-
-	three_finger_flag = TRUE;
-	key_led_flag = FALSE;
-
-	//	Initialising timer
-	if( !g_bInitialised )
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Initialising System Timers:" );
-
-	if(	install_timer() )
-	{
-		strcpy( szLastError, allegro_error );
-		nRet = ERROR_ALLEGRO;
-		if( !g_bInitialised )
-			textprintf( screen, font, 300, g_nTextY, COLOR_WHITE, "%s", allegro_error );
-		goto function_exit;
-	}
-	else
-	{
-		if( !g_bInitialised )
-		{
-			textprintf( screen, font, 300, g_nTextY, COLOR_GREEN, "Successful" );
-			g_nTextY = g_nTextY + TEXT_STEP;
-		}
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Initialising System Timers:" );
+		GfxTextf( 300, g_nTextY, COLOR_GREEN, "Successful" );
+		g_nTextY = g_nTextY + TEXT_STEP;
 	}
 
 	//	Initialising sound engine
 	if( g_bSound )
 	{
 		if( !g_bInitialised )
-			textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Initialising Sound Engine:" );
+			GfxTextf( 0, g_nTextY, COLOR_WHITE, "Initialising Sound Engine:" );
 
 		if( InitSound() )
 		{
-			strcpy( szLastError, allegro_error );
-			nRet = ERROR_ALLEGRO;
+			nRet = ERROR_SOUND;
 			if( !g_bInitialised )
-				textprintf( screen, font, 300, g_nTextY, COLOR_WHITE, "%s", allegro_error );
+				GfxTextf( 300, g_nTextY, COLOR_WHITE, "%s", szLastError );
 			goto function_exit;
 		}
 		else
 		{
 			if( !g_bInitialised )
 			{
-				textprintf( screen, font, 300, g_nTextY, COLOR_GREEN, "Successful" );
+				GfxTextf( 300, g_nTextY, COLOR_GREEN, "Successful" );
 				g_nTextY = g_nTextY + TEXT_STEP;
 			}
 		}
@@ -622,7 +530,7 @@ int LoadLevel( void )
 
 	//	Initialising sound engine
 	if( !g_bInitialised )
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Testing Level Data:" );
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Testing Level Data:" );
 
 	if( g_lpCMaze )
 		delete g_lpCMaze;
@@ -633,31 +541,23 @@ int LoadLevel( void )
 	{
 		nRet = ERROR_LOADLEVEL;
 		if( !g_bInitialised )
-			textprintf( screen, font, 300, g_nTextY, COLOR_RED, "Failed: Low Memory" );
+			GfxTextf( 300, g_nTextY, COLOR_RED, "Failed: Low Memory" );
 		goto function_exit;
 	}
 
-#ifndef _DESIGN_MODE_
-	if( !g_lpCMaze->AcquireFromDataFile( g_pDataFile, CYLU_LEVEL ) )
-	{
-		nRet = ERROR_LOADLEVEL;
-		if( !g_bInitialised )
-			textprintf( screen, font, 300, g_nTextY, COLOR_RED, "Failed: Unable To Load Level Data" );
-		goto function_exit;
-	}
-#else
+	//	The level is stored in its own file (it used to be the LEVEL entry in cylu.dat)
 	if( !g_lpCMaze->LoadMaze( LEVEL_FILE ) )
 	{
 		nRet = ERROR_LOADLEVEL;
+		snprintf( szLastError, sizeof( szLastError ), "Cannot load %s", LEVEL_FILE );
 		if( !g_bInitialised )
-			textprintf( screen, font, 300, g_nTextY, COLOR_RED, "Failed: Unable To Load Level Data" );
+			GfxTextf( 300, g_nTextY, COLOR_RED, "Failed: Unable To Load Level Data" );
 		goto function_exit;
 	}
-#endif
 
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 300, g_nTextY, COLOR_GREEN, "Successful" );
+		GfxTextf( 300, g_nTextY, COLOR_GREEN, "Successful" );
 		g_nTextY = g_nTextY + TEXT_STEP;
 	}
 
@@ -686,7 +586,7 @@ int LoadSprites( void )
 		delete g_pAnim;
 
 	if( !g_bInitialised )
-		textprintf( screen, font, 0, g_nTextY, COLOR_WHITE, "Loading Sprites:" );
+		GfxTextf( 0, g_nTextY, COLOR_WHITE, "Loading Sprites:" );
 
 	g_pAnim = new CAnim;
 
@@ -703,7 +603,7 @@ int LoadSprites( void )
 		{
 			if( !g_bInitialised )
 			{
-				textprintf( screen, font, 300, g_nTextY, COLOR_RED, "Failed: Low Memory" );
+				GfxTextf( 300, g_nTextY, COLOR_RED, "Failed: Low Memory" );
 				g_nTextY = g_nTextY + TEXT_STEP;
 				nRet = ERROR_LOWMEMORY;
 				goto function_exit;
@@ -715,7 +615,7 @@ int LoadSprites( void )
 
 	if( !g_bInitialised )
 	{
-		textprintf( screen, font, 300, g_nTextY, COLOR_GREEN, "Successful" );
+		GfxTextf( 300, g_nTextY, COLOR_GREEN, "Successful" );
 		g_nTextY = g_nTextY + TEXT_STEP;
 	}
 
@@ -733,43 +633,25 @@ function_exit:
 */
 void Terminate( void )
 {
-#ifdef _DOS
-	char szWork[255];
-#endif
-
 	if( g_pAnim )
 		delete g_pAnim;
+	g_pAnim = NULL;
 
 	if( g_lpCMaze )
 		delete g_lpCMaze;
+	g_lpCMaze = NULL;
 
-	if( g_pDataFile )
-		unload_datafile( g_pDataFile );
+	FreeSpriteData();
 
 	if( g_pBackBuffer )
-		destroy_bitmap( g_pBackBuffer );
+		al_destroy_bitmap( g_pBackBuffer );
+	g_pBackBuffer = NULL;
 
 	if( g_pCopy )
-		destroy_bitmap( g_pCopy );
+		al_destroy_bitmap( g_pCopy );
+	g_pCopy = NULL;
 
-	remove_timer();
-	remove_keyboard();
-
-	allegro_exit();
-
-#ifdef _DOS
-	textmode( C80 );
-	textbackground( BLUE );
-	textcolor( WHITE );
-	gotoxy( 1, 1 );
-
-	sprintf( szWork, " %30s                                : Version %01d.%02d  \r\n", VER_TITLE, VER_MAJOR, VER_MINOR );
-	cputs( szWork );
-
-	textbackground( BLACK );
-
-	cputs( "Any queries or requests, please contact me at:\r\n     apex@apexnow.co.uk\r\nWeb address\r\n     http://www.apexnow.co.uk\r\n" );
-#endif
+	PlatformShutdown();
 }
 
 /*
@@ -777,25 +659,31 @@ void Terminate( void )
 	Inputs:			None
 	Output:			Error Code
 
-	Description:	Initialises the graphics engine
+	Description:	Creates the 640x480 back buffer the game draws into.
+					The window itself is created by PlatformInit and the
+					back buffer is scaled to fit it in PlatformPresent.
 */
 int InitGraphics( void )
 {
 	int nRet = 0;
 
-	set_color_depth( 16 );
+	if( g_pBackBuffer )
+		al_destroy_bitmap( g_pBackBuffer );
 
-	if( set_gfx_mode( GFX_MODE, GRX_WIDTH, GRX_HEIGHT, 0, 0 ) )
+	//	Smooth scaling when the window is not an exact multiple of 640x480
+	al_set_new_bitmap_flags( ALLEGRO_VIDEO_BITMAP | ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR );
+	g_pBackBuffer = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
+	al_set_new_bitmap_flags( ALLEGRO_VIDEO_BITMAP );
+
+	if( !g_pBackBuffer )
 	{
-        nRet = ERROR_INITGRAPHICS;
+		snprintf( szLastError, sizeof( szLastError ), "Unable to create %dx%d back buffer", GRX_WIDTH, GRX_HEIGHT );
+		nRet = ERROR_INITGRAPHICS;
 		goto function_exit;
 	}
 
-	if( g_pBackBuffer )
-		destroy_bitmap( g_pBackBuffer );
-
-	g_pBackBuffer = create_bitmap( GRX_WIDTH, GRX_HEIGHT );
-	clear( g_pBackBuffer );
+	al_set_target_bitmap( g_pBackBuffer );
+	al_clear_to_color( al_map_rgb( 0, 0, 0 ) );
 
 function_exit:
 
@@ -807,16 +695,13 @@ function_exit:
 	Inputs:			None
 	Output:			Error Code
 
-	Description:	Initialises the sound engine
+	Description:	Initialises the sound engine.  The game has never had
+					sound effects or music (see readme.txt), so for now this
+					is a placeholder for the Allegro 5 audio add-on.
 */
 int InitSound( void )
 {
 	int nRet = 0;
-
-	if( install_sound( DIGI_AUTODETECT, MIDI_AUTODETECT, "" ) == 0 )
-		g_pMusic = load_midi( "music.mid" );
-	else
-		nRet = ERROR_SOUND;
 
 	return nRet;
 }
@@ -834,9 +719,9 @@ int Intro( void )
 	float fi, fj;
 	float fStep = 5;
 	int i, j;
-	BITMAP *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 
-	pBitmap = create_bitmap( GRX_WIDTH, GRX_HEIGHT );
+	pBitmap = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
 	if( !pBitmap )
 	{
 		nRet = ERROR_LOWMEMORY;
@@ -844,33 +729,48 @@ int Intro( void )
 	}
 
 	//	Prepare bitmap for blitting by ensuring title is on it
+	al_set_target_bitmap( pBitmap );
+	al_clear_to_color( al_map_rgb( 0, 0, 0 ) );
 	ShowTitle( pBitmap );
+
+	//	Each step is drawn over the previous frame, just as it was drawn
+	//	straight to the screen under Allegro 4
+	al_set_target_bitmap( g_pBackBuffer );
 
 	if( ((rand()%100)+1) < ((rand()%100)+1) )
 	{
+		//	Interlaced lines slide in from both sides
 		for( i=0; i<GRX_WIDTH; i=i+20 )
 		{
 			for( j=0; j<GRX_HEIGHT/2; j++ )
 			{
-				blit( pBitmap, screen, 0, j*2, (-GRX_WIDTH)+i, j*2, GRX_WIDTH, 1 );
-				blit( pBitmap, screen, 0, (j*2)+1, GRX_WIDTH-i, (j*2)+1, GRX_WIDTH, 1 );
+				al_draw_bitmap_region( pBitmap, 0, (float)(j*2), GRX_WIDTH, 1, (float)((-GRX_WIDTH)+i), (float)(j*2), 0 );
+				al_draw_bitmap_region( pBitmap, 0, (float)((j*2)+1), GRX_WIDTH, 1, (float)(GRX_WIDTH-i), (float)((j*2)+1), 0 );
 			}
-			vsync();
+			PlatformPresent( g_pBackBuffer );
+
+			if( PlatformQuitRequested() )
+				break;
 		}
 	}
 	else
 	{
+		//	Zoom out from the centre
 		fj = 0;
 
 		for( fi=0; fi<GRX_WIDTH/2; fi=fi+fStep )
 		{
-			stretch_blit( pBitmap, screen, 0, 0, GRX_WIDTH, GRX_HEIGHT, (int)((GRX_WIDTH/2)-fi), (int)((GRX_HEIGHT/2)-fj), (int)(fi*2), (int)(fj*2) );
+			al_draw_scaled_bitmap( pBitmap, 0, 0, GRX_WIDTH, GRX_HEIGHT,
+				(float)(int)((GRX_WIDTH/2)-fi), (float)(int)((GRX_HEIGHT/2)-fj), (float)(int)(fi*2), (float)(int)(fj*2), 0 );
 			fj = fj + ((float)GRX_HEIGHT / (float)GRX_WIDTH)*fStep;
-			vsync();
+			PlatformPresent( g_pBackBuffer );
+
+			if( PlatformQuitRequested() )
+				break;
 		}
 	}
 
-	destroy_bitmap( pBitmap );
+	al_destroy_bitmap( pBitmap );
 
 function_exit:
 
@@ -957,20 +857,17 @@ int GoCylu( void )
 	cputs( "GoCylu : Successful\r\n" );
 #endif
 
-	set_trans_blender( 0,0,0,0 );
-
-	if( g_bSound )
-	{
-		if( g_pMusic )
-		{
-			play_midi( g_pMusic, 1 );
-		}
-	}
-
 	while( g_enuGameState!=eExit )
 	{
+		//	Closing the window quits the game
+		if( PlatformQuitRequested() )
+		{
+			g_enuGameState = eExit;
+			break;
+		}
+
 		if( g_enuGameState!=ePause )
-			g_nTimer = retrace_count;	//	Get game timer count
+			g_nTimer = PlatformTicks();	//	Get game timer count
 
 		/*
 			Obtain key information
@@ -984,92 +881,92 @@ int GoCylu( void )
 				//	Keys that do not need testing for release
 				if( g_enuGameState==ePlay && !g_bMenu )
 				{
-					if( key[KEY_UP] )
+					if( PlatformKeyDown( ALLEGRO_KEY_UP ) )
 						g_nCurCmd = COMMAND_UP;
 
-					if( key[KEY_DOWN] )
+					if( PlatformKeyDown( ALLEGRO_KEY_DOWN ) )
 						g_nCurCmd = COMMAND_DOWN;
 
-					if( key[KEY_LEFT] )
+					if( PlatformKeyDown( ALLEGRO_KEY_LEFT ) )
 						g_nCurCmd = COMMAND_LEFT;
 
-					if( key[KEY_RIGHT] )
+					if( PlatformKeyDown( ALLEGRO_KEY_RIGHT ) )
 						g_nCurCmd = COMMAND_RIGHT;
 				}
 
 				//	Keys that are tested for release
-				if( g_nCurCmd == COMMAND_NONE && keypressed() )
+				if( g_nCurCmd == COMMAND_NONE && PlatformKeyPressed() )
 				{
-					nKey = readkey() >> 8;
+					nKey = PlatformReadKey();
 
 					if( g_enuGameState!=eEnd && g_enuGameState!=eCredits &&
 						g_enuGameState!=eInstructions )
 					{
-						if( nKey == KEY_ESC )
+						if( nKey == ALLEGRO_KEY_ESCAPE )
 							g_bMenu = !g_bMenu;
 					}
 
-					if( nKey == KEY_ENTER )
+					if( nKey == ALLEGRO_KEY_ENTER )
 						g_nCurCmd = COMMAND_EXECUTE;
 
 					if( g_bMenu )
 					{
-						if( nKey == KEY_UP )
+						if( nKey == ALLEGRO_KEY_UP )
 							g_nCurCmd = COMMAND_UP;
 
-						if( nKey == KEY_DOWN )
+						if( nKey == ALLEGRO_KEY_DOWN )
 							g_nCurCmd = COMMAND_DOWN;
 					}
 					else
 					{
-						if( nKey == KEY_SPACE )
+						if( nKey == ALLEGRO_KEY_SPACE )
 							g_nCurCmd = COMMAND_PICKUP;
 
-						if( nKey == KEY_BACKSPACE )
+						if( nKey == ALLEGRO_KEY_BACKSPACE )
 							g_nCurCmd = COMMAND_DROP;
 
-						if( nKey == KEY_X )
+						if( nKey == ALLEGRO_KEY_X )
 							g_nCurCmd = COMMAND_EXAMINE;
 
-						if( nKey == KEY_TAB )
+						if( nKey == ALLEGRO_KEY_TAB )
 							g_nCurCmd = COMMAND_SELECT;
 					}
 
-					clear_keybuf();
+					PlatformClearKeyBuf();
 				}
 			}
 		}
 #else
 		//	Keys that are tested for release
-		if( g_nCurCmd == COMMAND_NONE && keypressed() )
+		if( g_nCurCmd == COMMAND_NONE && PlatformKeyPressed() )
 		{
-			nKey = readkey() >> 8;
+			nKey = PlatformReadKey();
 
-			if( nKey == KEY_UP )
+			if( nKey == ALLEGRO_KEY_UP )
 				g_nCurCmd = COMMAND_UP;
 
-			if( nKey == KEY_DOWN )
+			if( nKey == ALLEGRO_KEY_DOWN )
 				g_nCurCmd = COMMAND_DOWN;
 
-			if( nKey == KEY_LEFT )
+			if( nKey == ALLEGRO_KEY_LEFT )
 				g_nCurCmd = COMMAND_LEFT;
 
-			if( nKey == KEY_RIGHT )
+			if( nKey == ALLEGRO_KEY_RIGHT )
 				g_nCurCmd = COMMAND_RIGHT;
 
-			if( nKey == KEY_ESC )
+			if( nKey == ALLEGRO_KEY_ESCAPE )
 				g_enuGameState = eExit;
 
-			if( nKey == KEY_TAB )
+			if( nKey == ALLEGRO_KEY_TAB )
 				g_nCurCmd = COMMAND_BRICK;
 
-			if( nKey == KEY_BACKSPACE )
+			if( nKey == ALLEGRO_KEY_BACKSPACE )
 				g_nCurCmd = COMMAND_DELETE;
 
-			if( nKey == KEY_SPACE )
+			if( nKey == ALLEGRO_KEY_SPACE )
 				g_nCurCmd = COMMAND_PLACE;
 
-			clear_keybuf();
+			PlatformClearKeyBuf();
 		}
 #endif
 		/*
@@ -1413,7 +1310,7 @@ int Process( void )
 									DisableShield( nAttrib );
 									SetPocket( NO_OBJECT, NO_ATTRIB, g_nPocket );
 
-									sprintf( szWork, "%00d", nAttrib );
+									sprintf( szWork, "%d", nAttrib );
 
 									//	Remove examine text timeout
 									ResetBouncyText();
@@ -1721,7 +1618,7 @@ int Actions( void )
 					//	Get the shield attribute number
 					nAttrib = g_lpCMaze->GetCell( g_nDroidX + nX, g_nDroidY + nY, CELL_ATTRIBUTE );
 
-					sprintf( szWork, "%00d", nAttrib );
+					sprintf( szWork, "%d", nAttrib );
 
 					//	Remove examine text timeout
 					ResetBouncyText();
@@ -1749,7 +1646,7 @@ int Actions( void )
 							break;
 
 						case OBJECT_CPU:
-							sprintf( szWork, "%00d", nAttrib );
+							sprintf( szWork, "%d", nAttrib );
 							ResetBouncyText();
 							PlaceBouncyText( "CPU", GRX_WIDTH/2, 60, 1 );
 							PlaceBouncyText( szWork, GRX_WIDTH/2, 140, 1 );
@@ -1842,16 +1739,19 @@ void ShowFade( void )
 
 	Description:	Compiles Title screen
 */
-int ShowTitle( BITMAP *pCopy )
+int ShowTitle( ALLEGRO_BITMAP *pCopy )
 {
 	int nRet = 0;
-	RLE_SPRITE *pSprite;
+	ALLEGRO_BITMAP *pSprite;
+	ALLEGRO_BITMAP *pOldTarget = al_get_target_bitmap();
 
 	if( !pCopy )
 		pCopy = g_pBackBuffer;
 
-	pSprite = (RLE_SPRITE*)g_pDataFile[ CYLU_TITLE ].dat;
-	draw_rle_sprite( pCopy, pSprite, 0, 0 );
+	al_set_target_bitmap( pCopy );
+
+	pSprite = GetSprite( CYLU_TITLE );
+	DrawSprite( pSprite, 0, 0 );
 
 	/*
 		Dont show the logo if instructions are shown because we
@@ -1859,21 +1759,20 @@ int ShowTitle( BITMAP *pCopy )
 	*/
 	if( g_enuGameState != eInstructions )
 	{
-		pSprite = (RLE_SPRITE*)g_pDataFile[ CYLU_LOGO ].dat;
-		draw_rle_sprite( pCopy, pSprite, GRX_WIDTH / 2 - pSprite->w / 2, 30 );
+		pSprite = GetSprite( CYLU_LOGO );
+		DrawSprite( pSprite, GRX_WIDTH / 2 - SpriteWidth( pSprite ) / 2, 30 );
 	}
 
 	if( !g_bMenu && g_enuGameState==eTitle )
 	{
-		text_mode( -1 );
-		textout_centre( pCopy, font, "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
-			130, makecol( 255,255,0 ) );
+		GfxTextCentre( "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
+			130, al_map_rgb( 255,255,0 ) );
 
-		textout_centre( pCopy, font, "Press <ESC> for menu", GRX_WIDTH / 2,
-			GRX_HEIGHT - 35, makecol( 255,255,0 ) );
-
-		text_mode( 0 );
+		GfxTextCentre( "Press <ESC> for menu", GRX_WIDTH / 2,
+			GRX_HEIGHT - 35, al_map_rgb( 255,255,0 ) );
 	}
+
+	al_set_target_bitmap( pOldTarget );
 
 	return nRet;
 }
@@ -1888,7 +1787,7 @@ int ShowTitle( BITMAP *pCopy )
 int ShowMenu( void )
 {
 	int nRet = 0;
-	RLE_SPRITE *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 
 	if( !g_bMenuShown )
 	{
@@ -1914,12 +1813,12 @@ int ShowMenu( void )
 		}
 
 		if( !g_pCopy )
-			g_pCopy = create_bitmap(GRX_WIDTH, GRX_HEIGHT);
+			g_pCopy = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
 
-		pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_LOGO ].dat;
-		draw_rle_sprite( g_pBackBuffer, pBitmap, GRX_WIDTH / 2 - pBitmap->w / 2, 30 );
+		pBitmap = GetSprite( CYLU_LOGO );
+		DrawSprite( pBitmap, GRX_WIDTH / 2 - SpriteWidth( pBitmap ) / 2, 30 );
 
-		blit( g_pBackBuffer, g_pCopy, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+		CopyBitmap( g_pCopy, g_pBackBuffer );
 
 		ResetBouncyText();
 
@@ -1943,7 +1842,7 @@ int ShowMenu( void )
 		g_bMenuShown = TRUE;
 	}
 
-	blit( g_pCopy, g_pBackBuffer, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+	CopyBitmap( g_pBackBuffer, g_pCopy );
 	DoBouncyText();
 	DoCursors();
 
@@ -1960,8 +1859,8 @@ int ShowMenu( void )
 int ShowInstructions( void )
 {
 	int nRet = 0;
-	char szWork[10];
-	RLE_SPRITE *pBitmap;
+	char szWork[32];
+	ALLEGRO_BITMAP *pBitmap;
 	int nSprite;
 
 	if( !g_bInstructionsShown )
@@ -1970,9 +1869,9 @@ int ShowInstructions( void )
 		ShowFade();
 
 		if( !g_pCopy )
-			g_pCopy = create_bitmap(GRX_WIDTH, GRX_HEIGHT);
+			g_pCopy = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
 
-		blit( g_pBackBuffer, g_pCopy, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+		CopyBitmap( g_pCopy, g_pBackBuffer );
 
 		ResetBouncyText();
 
@@ -1981,56 +1880,45 @@ int ShowInstructions( void )
 		g_bInstructionsShown = TRUE;
 	}
 
-	blit( g_pCopy, g_pBackBuffer, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+	CopyBitmap( g_pBackBuffer, g_pCopy );
 	DoBouncyText();
 
-	text_mode( -1 );
 
-	textout_centre( g_pBackBuffer, font, "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
-		95, makecol( 255,255,0 ) );
+	GfxTextCentre( "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
+		95, al_map_rgb( 255,255,0 ) );
 
 	sprintf( szWork, "Page %d/%d", g_nCurPage+1, g_nTotalPages );
-	textout_centre( g_pBackBuffer, font, szWork, GRX_WIDTH/2, 115, makecol( 0, 255, 0 ) );
+	GfxTextCentre( szWork, GRX_WIDTH/2, 115, al_map_rgb( 0, 255, 0 ) );
 
 	switch( g_nCurPage )
 	{
 		case 0:
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_DROIDE0 ].dat;
+			pBitmap = GetSprite( CYLU_DROIDE0 );
 
-			rectfill( g_pBackBuffer, 20, 120, 100, 220, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 120 );
+			RectFill( 20, 120, 100, 220, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 120 );
 
 		//   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-			textout( g_pBackBuffer, font,
-			"Cylu the Otsan, the chosen one, enters the land of Vole to",
+			GfxText( "Cylu the Otsan, the chosen one, enters the land of Vole to",
 			120, 130, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"participate in the final challenge.  The aim is simple,",
+			GfxText( "participate in the final challenge.  The aim is simple,",
 			120, 140, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"the quest is long",
+			GfxText( "the quest is long",
 			120, 150, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"The Otsan require a new leader, so a test has been devised",
+			GfxText( "The Otsan require a new leader, so a test has been devised",
 			120, 160, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"which is presented here.  You will require wits, speed,",
+			GfxText( "which is presented here.  You will require wits, speed,",
 			120, 170, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"cunning and logic to be worthy of the Otsan leader.",
+			GfxText( "cunning and logic to be worthy of the Otsan leader.",
 			120, 180, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"To complete the test, deposit all 24 objects into the",
+			GfxText( "To complete the test, deposit all 24 objects into the",
 			120, 190, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"central computer.  This will require a knowledge of the",
+			GfxText( "central computer.  This will require a knowledge of the",
 			120, 200, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"planet and certain areas are only accessible via the",
+			GfxText( "planet and certain areas are only accessible via the",
 			120, 210, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"teleportation network",
+			GfxText( "teleportation network",
 			120, 220, COLOR_YELLOW );
 
 /*			Fade( g_pBackBuffer, 30, 280, 80, 100 );
@@ -2039,39 +1927,37 @@ int ShowInstructions( void )
 			Fade( g_pBackBuffer, 390, 280, 80, 100 );
 			Fade( g_pBackBuffer, 510, 280, 80, 100 );*/
 
-			rectfill( g_pBackBuffer, 30, 280, 110, 380, COLOR_DGREY );
-			rectfill( g_pBackBuffer, 150, 280, 230, 380, COLOR_DGREY );
-			rectfill( g_pBackBuffer, 270, 280, 350, 380, COLOR_DGREY );
-			rectfill( g_pBackBuffer, 390, 280, 470, 380, COLOR_DGREY );
-			rectfill( g_pBackBuffer, 510, 280, 590, 380, COLOR_DGREY );
+			RectFill( 30, 280, 110, 380, COLOR_DGREY );
+			RectFill( 150, 280, 230, 380, COLOR_DGREY );
+			RectFill( 270, 280, 350, 380, COLOR_DGREY );
+			RectFill( 390, 280, 470, 380, COLOR_DGREY );
+			RectFill( 510, 280, 590, 380, COLOR_DGREY );
 
-			textout_centre( g_pBackBuffer, font,
-			"These are a selection of objects you must collect",
+			GfxTextCentre( "These are a selection of objects you must collect",
 			GRX_WIDTH / 2, 245, COLOR_GREEN );
 
-			textout_centre( g_pBackBuffer, font,
-			"and deposit into the central computer",
+			GfxTextCentre( "and deposit into the central computer",
 			GRX_WIDTH / 2, 255, COLOR_GREEN );
 
 			nSprite = Convert( OBJECT_OBJECT, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 30, 280 );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 30, 280 );
 
 			nSprite = Convert( OBJECT_OBJECT, 1 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 150, 280 );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 150, 280 );
 
 			nSprite = Convert( OBJECT_OBJECT, 2 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 270, 280 );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 270, 280 );
 
 			nSprite = Convert( OBJECT_OBJECT, 3 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 390, 280 );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 390, 280 );
 
 			nSprite = Convert( OBJECT_OBJECT, 4 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 510, 280 );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 510, 280 );
 
 			g_pAnim->Advance( g_nTimer );
 			break;
@@ -2079,190 +1965,160 @@ int ShowInstructions( void )
 		case 1:
 			//	Display the forcefield
 			nSprite = Convert( OBJECT_SHIELD, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 120, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 120, 100, 220, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 120 );
+			RectFill( 20, 120, 100, 220, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 120 );
 
 			//	Display the chip
 			nSprite = Convert( OBJECT_CPU, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 230, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 230, 100, 330, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 230 );
+			RectFill( 20, 230, 100, 330, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 230 );
 
 			//	Display	fuel cells
 			nSprite = Convert( OBJECT_FUEL, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 340, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 340, 100, 440, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 340 );
+			RectFill( 20, 340, 100, 440, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 340 );
 
 		//   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-			textout( g_pBackBuffer, font,
-			"Forcefields prohibit access to areas of the planet",
+			GfxText( "Forcefields prohibit access to areas of the planet",
 			120, 170, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"By depositing chips into the central computer, each",
+			GfxText( "By depositing chips into the central computer, each",
 			120, 280, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"chip will disable designated forcefields around the planet",
+			GfxText( "chip will disable designated forcefields around the planet",
 			120, 290, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"Collect and use fuel cells to maintain life support systems",
+			GfxText( "Collect and use fuel cells to maintain life support systems",
 			120, 380, COLOR_YELLOW );
 			break;
 
 		case 2:
 			//	Display the teleporter
 			nSprite = Convert( OBJECT_TRANSPORT, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 120, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 120, 100, 220, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 120 );
+			RectFill( 20, 120, 100, 220, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 120 );
 
 			//	Display the teleport key
 			nSprite = Convert( OBJECT_KEY, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 230, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 230, 100, 330, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 230 );
+			RectFill( 20, 230, 100, 330, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 230 );
 
 		//   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-			textout( g_pBackBuffer, font,
-			"Teleporters allow you access to areas of the planet via",
+			GfxText( "Teleporters allow you access to areas of the planet via",
 			120, 170, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"the teleportation network",
+			GfxText( "the teleportation network",
 			120, 180, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"HINT: Ensure your way home!",
+			GfxText( "HINT: Ensure your way home!",
 			120, 190, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"Teleportation keys are assigned to designated pads of",
+			GfxText( "Teleportation keys are assigned to designated pads of",
 			120, 260, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"the teleportation network.  To use, face a teleport pad",
+			GfxText( "the teleportation network.  To use, face a teleport pad",
 			120, 270, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"while holding a key and use it.  You will then be teleported",
+			GfxText( "while holding a key and use it.  You will then be teleported",
 			120, 280, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"to the key's designated teleport pad",
+			GfxText( "to the key's designated teleport pad",
 			120, 290, COLOR_YELLOW );
 			break;
 
 		case 3:
 			//	Display the	RFL object
 			nSprite = Convert( OBJECT_RFL, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 120, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 120, 100, 220, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 120 );
+			RectFill( 20, 120, 100, 220, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 120 );
 
 			//	Display the	RTB object
 			nSprite = Convert( OBJECT_RTB, 0 );
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
 //			Fade( g_pBackBuffer, 20, 230, 80, 100 );
-			rectfill( g_pBackBuffer, 20, 230, 100, 330, COLOR_DGREY );
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 20, 230 );
+			RectFill( 20, 230, 100, 330, COLOR_DGREY );
+			DrawSprite( pBitmap, 20, 230 );
 
 		//   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-			textout( g_pBackBuffer, font,
-			"Special object.  Refuel at base allows you to replenish your",
+			GfxText( "Special object.  Refuel at base allows you to replenish your",
 			120, 160, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"life support systems while facing the central computer.",
+			GfxText( "life support systems while facing the central computer.",
 			120, 170, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"Collect this object and keep hold of it incase you cannot",
+			GfxText( "Collect this object and keep hold of it incase you cannot",
 			120, 180, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"find fuel near by",
+			GfxText( "find fuel near by",
 			120, 190, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"Special object.  Return to base will ensure your safe return",
+			GfxText( "Special object.  Return to base will ensure your safe return",
 			120, 260, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"to the central computer.  Keep hold of this during later",
+			GfxText( "to the central computer.  Keep hold of this during later",
 			120, 270, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"exploration of the planet to allow you to bring back",
+			GfxText( "exploration of the planet to allow you to bring back",
 			120, 280, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"objects for deposit",
+			GfxText( "objects for deposit",
 			120, 290, COLOR_YELLOW );
 
 			break;
 
 		case 4:
-			textout_centre( g_pBackBuffer, font,
-			"Keys to use during the game",
+			GfxTextCentre( "Keys to use during the game",
 			GRX_WIDTH / 2, 140, COLOR_BLUE );
 
 			//	Display Keys
-			textout( g_pBackBuffer, font,
-			"<ARROW KEYS>         Use arrow keys to navigate the planet",
+			GfxText( "<ARROW KEYS>         Use arrow keys to navigate the planet",
 			70, 170, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"<SPACE>              Pick up objects you are facing",
+			GfxText( "<SPACE>              Pick up objects you are facing",
 			70, 190, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"<BACKSPACE>          Drop the currently selected object",
+			GfxText( "<BACKSPACE>          Drop the currently selected object",
 			70, 210, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"<TAB>                Select one of your five pockets",
+			GfxText( "<TAB>                Select one of your five pockets",
 			70, 230, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"<ENTER>              Use the object currently selected",
+			GfxText( "<ENTER>              Use the object currently selected",
 			70, 250, COLOR_YELLOW );
 
-			textout( g_pBackBuffer, font,
-			"<X>                  Examine the item you're carrying",
+			GfxText( "<X>                  Examine the item you're carrying",
 			70, 270, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"                     Or examine the forcefield you're facing",
+			GfxText( "                     Or examine the forcefield you're facing",
 			70, 280, COLOR_GREEN );
 
 			//	Other details
-			textout( g_pBackBuffer, font,
-			"During the game, pressing <ESC> will bring up the menu.",
+			GfxText( "During the game, pressing <ESC> will bring up the menu.",
 			70, 300, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"Here you have the choice of saving your game, or loading",
+			GfxText( "Here you have the choice of saving your game, or loading",
 			70, 310, COLOR_YELLOW );
-			textout( g_pBackBuffer, font,
-			"a previously saved game.",
+			GfxText( "a previously saved game.",
 			70, 320, COLOR_YELLOW );
 
 			break;
@@ -2270,10 +2126,9 @@ int ShowInstructions( void )
 
 	g_pAnim->Advance( g_nTimer );
 
-	textout_centre( g_pBackBuffer, font, "Press <ENTER> to continue", GRX_WIDTH / 2,
+	GfxTextCentre( "Press <ENTER> to continue", GRX_WIDTH / 2,
 		GRX_HEIGHT - 30, COLOR_CYAN );
 
-	text_mode( 0 );
 
 	return nRet;
 }
@@ -2288,42 +2143,41 @@ int ShowInstructions( void )
 int ShowCredits( void )
 {
 	int nRet = 0;
-	RLE_SPRITE *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 
-	pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_LOGO ].dat;
-	draw_rle_sprite( g_pBackBuffer, pBitmap, GRX_WIDTH / 2 - pBitmap->w / 2, 30 );
+	pBitmap = GetSprite( CYLU_LOGO );
+	DrawSprite( pBitmap, GRX_WIDTH / 2 - SpriteWidth( pBitmap ) / 2, 30 );
 
-	text_mode( -1 );
-	textout_centre( g_pBackBuffer, font, "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
+	GfxTextCentre( "Designed and programmed by Paul S.J.Millard", GRX_WIDTH / 2,
 		140, COLOR_RED );
-	textout_centre( g_pBackBuffer, font, "Original game concept by Geoff Foley", GRX_WIDTH / 2,
+	GfxTextCentre( "Original game concept by Geoff Foley", GRX_WIDTH / 2,
 		160, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "Original game published in 1985 by Firebird Software", GRX_WIDTH / 2,
+	GfxTextCentre( "Original game published in 1985 by Firebird Software", GRX_WIDTH / 2,
 		180, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "For the Amstrad CPC series computer", GRX_WIDTH / 2,
+	GfxTextCentre( "For the Amstrad CPC series computer", GRX_WIDTH / 2,
 		195, COLOR_YELLOW );
 
-	textout_centre( g_pBackBuffer, font, "Thanks goes to the following people", GRX_WIDTH / 2,
+	GfxTextCentre( "Thanks goes to the following people", GRX_WIDTH / 2,
 		230, COLOR_CYAN );
-	textout_centre( g_pBackBuffer, font, "DJ Delorie - For DJGPP v2.03", GRX_WIDTH / 2,
+	GfxTextCentre( "DJ Delorie - For DJGPP v2.03", GRX_WIDTH / 2,
 		250, COLOR_YELLOW );
-	textprintf_centre( g_pBackBuffer, font, GRX_WIDTH / 2, 260, makecol( 255,255,0 ), "Shawn Hargreaves for %s", allegro_id );
-	textout_centre( g_pBackBuffer, font, "The POV-Ray Team - for Persistence of Vision(TM) v3.02 (DOS)", GRX_WIDTH / 2,
+	GfxTextfCentre( GRX_WIDTH / 2, 260, al_map_rgb( 255,255,0 ), "Shawn Hargreaves and the Allegro team for Allegro %d.%d.%d",
+		al_get_allegro_version() >> 24, (al_get_allegro_version() >> 16) & 255, (al_get_allegro_version() >> 8) & 255 );
+	GfxTextCentre( "The POV-Ray Team - for Persistence of Vision(TM) v3.02 (DOS)", GRX_WIDTH / 2,
 		270, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "Denis Olivier - For POVLab v4.00 SP4 Build 139", GRX_WIDTH / 2,
+	GfxTextCentre( "Denis Olivier - For POVLab v4.00 SP4 Build 139", GRX_WIDTH / 2,
 		280, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "Robert Hohne - For RHIDE v1.4", GRX_WIDTH / 2,
+	GfxTextCentre( "Robert Hohne - For RHIDE v1.4", GRX_WIDTH / 2,
 		290, COLOR_YELLOW );
 
-	textout_centre( g_pBackBuffer, font, "And lastly but not least...", GRX_WIDTH / 2,
+	GfxTextCentre( "And lastly but not least...", GRX_WIDTH / 2,
 		320, COLOR_MAGENTA );
-	textout_centre( g_pBackBuffer, font, "Tanya, my loving wife, for all her support and encouragement", GRX_WIDTH / 2,
+	GfxTextCentre( "Tanya, my loving wife, for all her support and encouragement", GRX_WIDTH / 2,
 		330, COLOR_MAGENTA );
 
-	textout_centre( g_pBackBuffer, font, "Press <ENTER> to continue", GRX_WIDTH / 2,
+	GfxTextCentre( "Press <ENTER> to continue", GRX_WIDTH / 2,
 		GRX_HEIGHT - 60, COLOR_YELLOW );
 
-	text_mode( 0 );
 
 	return nRet;
 }
@@ -2339,16 +2193,16 @@ int ShowEndGame( void )
 {
 	int nRet = 0;
 
-	RLE_SPRITE *pSprite;
+	ALLEGRO_BITMAP *pSprite;
 
 	if( !g_bEndGame )
 	{
 		if( !g_pCopy )
-			g_pCopy = create_bitmap(GRX_WIDTH, GRX_HEIGHT);
+			g_pCopy = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
 
 		Compile();		//	Done once
 		Fade( g_pBackBuffer, 10, 10, GRX_WIDTH - 20, GRX_HEIGHT - 20 );
-		blit( g_pBackBuffer, g_pCopy, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+		CopyBitmap( g_pCopy, g_pBackBuffer );
 
 		ResetBouncyText();
 		PlaceBouncyText( "GAME OVER", GRX_WIDTH/2, 180, 1 );
@@ -2356,22 +2210,20 @@ int ShowEndGame( void )
 		g_bEndGame = TRUE;
 	}
 
-	blit( g_pCopy, g_pBackBuffer, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
-	pSprite = (RLE_SPRITE*)g_pDataFile[ CYLU_LOGO ].dat;
-	draw_rle_sprite( g_pBackBuffer, pSprite, GRX_WIDTH / 2 - pSprite->w / 2, 30 );
+	CopyBitmap( g_pBackBuffer, g_pCopy );
+	pSprite = GetSprite( CYLU_LOGO );
+	DrawSprite( pSprite, GRX_WIDTH / 2 - SpriteWidth( pSprite ) / 2, 30 );
 
 	DoBouncyText();
 
-	text_mode( -1 );
 
-	textout_centre( g_pBackBuffer, font, "Your life support systems have failed",
+	GfxTextCentre( "Your life support systems have failed",
 		GRX_WIDTH/2, 300, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "Better luck next time",
+	GfxTextCentre( "Better luck next time",
 		GRX_WIDTH/2, 310, COLOR_YELLOW );
 
-	textout_centre( g_pBackBuffer, font, "Press <ENTER> to continue",
+	GfxTextCentre( "Press <ENTER> to continue",
 		GRX_WIDTH / 2, GRX_HEIGHT - 40, COLOR_YELLOW );
-	text_mode( 0 );
 
 	return nRet;
 }
@@ -2387,16 +2239,16 @@ int ShowWin( void )
 {
 	int nRet = 0;
 
-	RLE_SPRITE *pSprite;
+	ALLEGRO_BITMAP *pSprite;
 
 	if( !g_bEndGame )
 	{
 		if( !g_pCopy )
-			g_pCopy = create_bitmap(GRX_WIDTH, GRX_HEIGHT);
+			g_pCopy = al_create_bitmap( GRX_WIDTH, GRX_HEIGHT );
 
 		Compile();		//	Done once
 		Fade( g_pBackBuffer, 10, 10, GRX_WIDTH - 20, GRX_HEIGHT - 20 );
-		blit( g_pBackBuffer, g_pCopy, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+		CopyBitmap( g_pCopy, g_pBackBuffer );
 
 		ResetBouncyText();
 		PlaceBouncyText( "WELL DONE", GRX_WIDTH/2, 180, 1 );
@@ -2404,31 +2256,29 @@ int ShowWin( void )
 		g_bEndGame = TRUE;
 	}
 
-	blit( g_pCopy, g_pBackBuffer, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
-	pSprite = (RLE_SPRITE*)g_pDataFile[ CYLU_LOGO ].dat;
-	draw_rle_sprite( g_pBackBuffer, pSprite, GRX_WIDTH / 2 - pSprite->w / 2, 30 );
+	CopyBitmap( g_pBackBuffer, g_pCopy );
+	pSprite = GetSprite( CYLU_LOGO );
+	DrawSprite( pSprite, GRX_WIDTH / 2 - SpriteWidth( pSprite ) / 2, 30 );
 
 	DoBouncyText();
 
-	text_mode( -1 );
 
-	textout_centre( g_pBackBuffer, font, "*** Congratulations!!! ***",
+	GfxTextCentre( "*** Congratulations!!! ***",
 		GRX_WIDTH/2, 300, COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "You've successfully completed the test", GRX_WIDTH/2, 320,
+	GfxTextCentre( "You've successfully completed the test", GRX_WIDTH/2, 320,
 		COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "The Otsan are very pleased and have rewarded you", GRX_WIDTH/2, 330,
+	GfxTextCentre( "The Otsan are very pleased and have rewarded you", GRX_WIDTH/2, 330,
 		COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "Now you will take your place as leader", GRX_WIDTH/2, 340,
-		COLOR_YELLOW );
-
-	textout_centre( g_pBackBuffer, font, "Enjoy the fruits of leadership for now, but you will", GRX_WIDTH/2, 360,
-		COLOR_YELLOW );
-	textout_centre( g_pBackBuffer, font, "soon be faced with new and more challenging tasks...", GRX_WIDTH/2, 370,
+	GfxTextCentre( "Now you will take your place as leader", GRX_WIDTH/2, 340,
 		COLOR_YELLOW );
 
-	textout_centre( g_pBackBuffer, font, "Press <ENTER> to continue", GRX_WIDTH / 2, GRX_HEIGHT - 40,
+	GfxTextCentre( "Enjoy the fruits of leadership for now, but you will", GRX_WIDTH/2, 360,
 		COLOR_YELLOW );
-	text_mode( 0 );
+	GfxTextCentre( "soon be faced with new and more challenging tasks...", GRX_WIDTH/2, 370,
+		COLOR_YELLOW );
+
+	GfxTextCentre( "Press <ENTER> to continue", GRX_WIDTH / 2, GRX_HEIGHT - 40,
+		COLOR_YELLOW );
 
 	return nRet;
 }
@@ -2466,7 +2316,7 @@ void ResetBouncyText( void )
 
 					Use ResetBouncyText to clear the text buffers
 */
-int PlaceBouncyText( char *szText, int nX, int nY, int nAllign )
+int PlaceBouncyText( const char *szText, int nX, int nY, int nAllign )
 {
 	int nRet = 0;
 	int nLen, nBouncyLen;
@@ -2694,7 +2544,7 @@ int DoCursors( void )
 {
 	int nRet = 0;
 	int i;
-	BITMAP *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 	static int nRotate = 0;
 
 	const int nSize = 20;			//	Size of attractor
@@ -2703,7 +2553,7 @@ int DoCursors( void )
 
 	for( i=0; i<MAX_CURSORS; i++ )
 	{
-		pBitmap = (BITMAP*)g_pDataFile[ CYLU_STAR ].dat;
+		pBitmap = GetSprite( CYLU_STAR );
 
         if( g_nCursorCurX[i] < g_nCursorGotoX[i] - nSize || g_nCursorCurX[i] > g_nCursorGotoX[i] + nSize ||
  			g_nCursorCurY[i] < g_nCursorGotoY[i] - nSize || g_nCursorCurY[i] > g_nCursorGotoY[i] + nSize )
@@ -2741,9 +2591,9 @@ int DoCursors( void )
         }
 
 		if( g_bRotate )
-			rotate_sprite( g_pBackBuffer, pBitmap, g_nCursorCurX[i], g_nCursorCurY[i]-15, itofix(nRotate) );
+			RotateSprite( pBitmap, g_nCursorCurX[i], g_nCursorCurY[i]-15, nRotate );
 		else
-			draw_sprite( g_pBackBuffer, pBitmap, g_nCursorCurX[i], g_nCursorCurY[i]-15 );
+			DrawSprite( pBitmap, g_nCursorCurX[i], g_nCursorCurY[i]-15 );
 
 		nRotate = nRotate + 2;
 		if( nRotate > 357 ) nRotate = 0;
@@ -2763,7 +2613,7 @@ int DoBouncyText( void )
 {
 	int nRet = 0;
 	int i;
-	BITMAP *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 
 	const int nSize = 20;			//	Size of attractor
 	const int nMass = 100;			//	Mass of attractor
@@ -2774,7 +2624,7 @@ int DoBouncyText( void )
 
 	for( i=0; i<g_nEndHere; i++ )
 	{
-		pBitmap = (BITMAP*)g_pDataFile[ g_nTextSprites[i] ].dat;
+		pBitmap = GetSprite( g_nTextSprites[i] );
 
         if( g_nCurX[i] < g_nGotoX[i] - nSize || g_nCurX[i] > g_nGotoX[i] + nSize ||
  			g_nCurY[i] < g_nGotoY[i] - nSize || g_nCurY[i] > g_nGotoY[i] + nSize )
@@ -2829,9 +2679,9 @@ int DoBouncyText( void )
 			g_nCurRotate[i] = g_nGotoRotate[i];
 
 		if( g_bRotate )
-			rotate_sprite( g_pBackBuffer, pBitmap, g_nCurX[i], g_nCurY[i], itofix(g_nCurRotate[i]) );
+			RotateSprite( pBitmap, g_nCurX[i], g_nCurY[i], g_nCurRotate[i] );
 		else
-			draw_sprite( g_pBackBuffer, pBitmap, g_nCurX[i], g_nCurY[i] );
+			DrawSprite( pBitmap, g_nCurX[i], g_nCurY[i] );
 	}
 
 	return nRet;
@@ -2847,7 +2697,7 @@ int DoBouncyText( void )
 int Compile( void )
 {
 	int nRet = 0;
-	RLE_SPRITE *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 	int x,y;
 	float fXPos, fYPos;
 	float fShade;
@@ -2866,7 +2716,6 @@ int Compile( void )
 
 	nMiddle = GRX_WIDTH/2;
 
-	set_trans_blender( 0,0,0,0 );
 
 	//	Advance frames
 	if( g_enuGameState==ePlay && !g_bMenu )
@@ -2961,7 +2810,7 @@ int Compile( void )
 			nAttrib = g_lpCMaze->GetCell( x+g_nDroidX-DROID_OFFSETX, y+g_nDroidY-DROID_OFFSETY, CELL_ATTRIBUTE );
 			nSprite = Convert( nObject, nAttrib );
 
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite+nIfMoving ) ].dat;
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite+nIfMoving ) );
 
 			switch( g_nDroidDir )
 			{
@@ -3038,14 +2887,14 @@ int Compile( void )
 			if( nShade<0 ) nShade = 0;
 
 			//	Draw me sprites!!
-			draw_lit_rle_sprite( g_pBackBuffer, pBitmap, (int)fXPos, (int)fYPos, nShade );
+			DrawLitSprite( pBitmap, (int)fXPos, (int)fYPos, nShade );
 		}
 
 #ifdef _DESIGN_MODE_
 		if( x == 4 && y == 4 )
 		{
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_CURSOR ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, (int)fXPos, (int)fYPos );
+			pBitmap = GetSprite( CYLU_CURSOR );
+			DrawSprite( pBitmap, (int)fXPos, (int)fYPos );
 		}
 #endif
 
@@ -3076,9 +2925,9 @@ int Compile( void )
 
 #ifdef _DESIGN_MODE_
 	nSprite = Convert( OBJECT_WALL, g_nWall );
-	pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
+	pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
 
-	draw_rle_sprite( g_pBackBuffer, pBitmap, 10, GRX_HEIGHT - 110 );
+	DrawSprite( pBitmap, 10, GRX_HEIGHT - 110 );
 #endif
 
 	return nRet;
@@ -3094,12 +2943,12 @@ int Compile( void )
 int CompileStats( void )
 {
 	int nRet = 0;
-	RLE_SPRITE *pBitmap;
+	ALLEGRO_BITMAP *pBitmap;
 	int i;
 	int nObject;
 	int nAttrib;
 	int nSprite;
-	int nColor;
+	ALLEGRO_COLOR nColor;
 	char szWork[20];
 
 	/*
@@ -3108,15 +2957,15 @@ int CompileStats( void )
 	Fade( g_pBackBuffer, 470, 370+g_nStatPos, GRX_WIDTH - 480, (GRX_HEIGHT - 380)+g_nStatPos );
 	for( i=0; i<3; i++ )
 	{
-		rect( g_pBackBuffer, 450 + i, (370 + i)+g_nStatPos, GRX_WIDTH - 10 - i, (GRX_HEIGHT - 10 - i)+g_nStatPos, makecol( 127, 0, 255 ) );
-		rect( g_pBackBuffer, 488 + i, (370 + i)+g_nStatPos, 488 + i, (GRX_HEIGHT - 10 - i)+g_nStatPos, makecol( 127, 0, 255 ) );
+		Rect( 450 + i, (370 + i)+g_nStatPos, GRX_WIDTH - 10 - i, (GRX_HEIGHT - 10 - i)+g_nStatPos, al_map_rgb( 127, 0, 255 ) );
+		Rect( 488 + i, (370 + i)+g_nStatPos, 488 + i, (GRX_HEIGHT - 10 - i)+g_nStatPos, al_map_rgb( 127, 0, 255 ) );
 	}
 
 	//	Draw fuel gauge
-	rectfill( g_pBackBuffer, 460, (GRX_HEIGHT - 20 - (int)((((float)GRX_HEIGHT - 380 - 20) / (float)FUEL_INIT) * (float)g_nFuel))+g_nStatPos, 480, (GRX_HEIGHT - 20)+g_nStatPos, makecol(0,255,0 ) );
-	rect( g_pBackBuffer, 460, 380+g_nStatPos, 480, (GRX_HEIGHT - 20)+g_nStatPos, makecol( 255,255,255 ) );
-	pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_FUELGAUGE ].dat;
-	draw_rle_sprite( g_pBackBuffer, pBitmap, 458, 380+g_nStatPos );
+	RectFill( 460, (GRX_HEIGHT - 20 - (int)((((float)GRX_HEIGHT - 380 - 20) / (float)FUEL_INIT) * (float)g_nFuel))+g_nStatPos, 480, (GRX_HEIGHT - 20)+g_nStatPos, al_map_rgb(0,255,0 ) );
+	Rect( 460, 380+g_nStatPos, 480, (GRX_HEIGHT - 20)+g_nStatPos, al_map_rgb( 255,255,255 ) );
+	pBitmap = GetSprite( CYLU_FUELGAUGE );
+	DrawSprite( pBitmap, 458, 380+g_nStatPos );
 
 	/*
 		Show inventory
@@ -3127,38 +2976,38 @@ int CompileStats( void )
 
 		if( i==g_nPocket )
 		{
-			nColor = makecol( 255, 255, 127 );
+			nColor = al_map_rgb( 255, 255, 127 );
 			//Fade( g_pBackBuffer, 5 + (i*90), 370+g_nStatPos, 80, 100 );
-			rect( g_pBackBuffer, (5 + (i*90))-3, (370+g_nStatPos)-3, 5 + (i*90) + 83, 473+g_nStatPos, nColor );
+			Rect( (5 + (i*90))-3, (370+g_nStatPos)-3, 5 + (i*90) + 83, 473+g_nStatPos, nColor );
 		}
 		else
-			nColor = makecol( 255, 0, 0 );
+			nColor = al_map_rgb( 255, 0, 0 );
 
 		if( nObject!=-1 )
 		{
 			nSprite = Convert( nObject, nAttrib );
 
-			pBitmap = (RLE_SPRITE*)g_pDataFile[ g_pAnim->GetFrame( nSprite ) ].dat;
-			draw_rle_sprite( g_pBackBuffer, pBitmap, 5 + (i*90), 370+g_nStatPos );
+			pBitmap = GetSprite( g_pAnim->GetFrame( nSprite ) );
+			DrawSprite( pBitmap, 5 + (i*90), 370+g_nStatPos );
 		}
 
-		rect( g_pBackBuffer, 5 + (i*90), 370+g_nStatPos, 5 + (i*90) + 80, 470+g_nStatPos, nColor );
+		Rect( 5 + (i*90), 370+g_nStatPos, 5 + (i*90) + 80, 470+g_nStatPos, nColor );
 	}
 
 	//	Display	gauge titles
-	pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_OBJECTS ].dat;
-	draw_rle_sprite( g_pBackBuffer, pBitmap, 497, 380+g_nStatPos );
+	pBitmap = GetSprite( CYLU_OBJECTS );
+	DrawSprite( pBitmap, 497, 380+g_nStatPos );
 
-	pBitmap = (RLE_SPRITE*)g_pDataFile[ CYLU_PACES ].dat;
-	draw_rle_sprite( g_pBackBuffer, pBitmap, 518, 422+g_nStatPos );
+	pBitmap = GetSprite( CYLU_PACES );
+	DrawSprite( pBitmap, 518, 422+g_nStatPos );
 
 	//	Display objects
 	sprintf( szWork, "%d/%d", g_nObjects, g_nMaxObjects );
-	textout( g_pBackBuffer, font, szWork, 545, 408+g_nStatPos, makecol( 0, 255, 0 ) );
+	GfxTextBg( szWork, 545, 408+g_nStatPos, al_map_rgb( 0, 255, 0 ), COLOR_BLACK );
 
 	//	Display paces
 	sprintf( szWork, "%d", g_nPaces );
-	textout( g_pBackBuffer, font, szWork, 555, 450+g_nStatPos, makecol( 0, 255, 0 ) );
+	GfxTextBg( szWork, 555, 450+g_nStatPos, al_map_rgb( 0, 255, 0 ), COLOR_BLACK );
 
 	//	Show examination text if required
 	if(	g_nExamineTimer > 0 )
@@ -3192,7 +3041,8 @@ int ClearBackBuffer( void )
 		goto function_exit;
 	}
 
-	clear_to_color( g_pBackBuffer, GRX_MAKECOL( GRX_RED, GRX_GREEN, GRX_BLUE ) );
+	al_set_target_bitmap( g_pBackBuffer );
+	al_clear_to_color( GRX_MAKECOL( GRX_RED, GRX_GREEN, GRX_BLUE ) );
 
 function_exit:
 
@@ -3216,12 +3066,9 @@ int Render( void )
 		goto function_exit;
 	}
 
-#ifdef _VSYNC_
-	if( g_bVsync )
-		vsync();
-#endif
-
-	blit( g_pBackBuffer, screen, 0, 0, 0, 0, GRX_WIDTH, GRX_HEIGHT );
+	//	Waits for the next 70Hz game tick (unless -novsync was given),
+	//	then scales the back buffer to the window
+	PlatformPresent( g_pBackBuffer );
 
 function_exit:
 
@@ -3244,7 +3091,7 @@ int Convert( int nObject, int nAttrib )
 	int i;
 	FILTER Filter;
 
-	for( i=0; i<sizeof( g_pFilter ); i++ )
+	for( i=0; i<(int)( sizeof( g_pFilter ) / sizeof( g_pFilter[0] ) ); i++ )
 	{
 		Filter = g_pFilter[i];
 
@@ -3320,14 +3167,15 @@ int Parser( void )
 
 	Description:	Renders a darkened rectangle onto the specified bitmap
 */
-int Fade( BITMAP *pBitmap, int nX, int nY, int nWidth, int nHeight )
+int Fade( ALLEGRO_BITMAP *pBitmap, int nX, int nY, int nWidth, int nHeight )
 {
 	int nRet = 0;
 
-	set_trans_blender( 0, 0, 0, 127 );
-	drawing_mode( DRAW_MODE_TRANS, 0, 0, 0 );
-	rectfill( pBitmap, nX, nY, nX + nWidth, nY + nHeight, makecol( 0, 63, 127 )  );
-	drawing_mode( DRAW_MODE_SOLID, 0, 0, 0 );
+	ALLEGRO_BITMAP *pOldTarget = al_get_target_bitmap();
+
+	al_set_target_bitmap( pBitmap );
+	RectFillTrans( nX, nY, nX + nWidth, nY + nHeight, al_map_rgb( 0, 63, 127 ), 127 );
+	al_set_target_bitmap( pOldTarget );
 
 	return nRet;
 }
@@ -3491,6 +3339,37 @@ function_exit:
 }
 
 /*
+	Function:		SaveGamePath
+	Inputs:			None
+	Output:			Full path of the save game file
+
+	Description:	Saved games are kept in the user's application data
+					folder (e.g. %APPDATA%\Apex\Cylu on Windows) so the game
+					can be installed somewhere read-only such as Program Files
+*/
+const char *SaveGamePath( void )
+{
+	static char szPath[ 1024 ] = { "" };
+	ALLEGRO_PATH *pPath;
+
+	if( szPath[0] )
+		return szPath;
+
+	pPath = al_get_standard_path( ALLEGRO_USER_DATA_PATH );
+	if( pPath )
+	{
+		al_make_directory( al_path_cstr( pPath, ALLEGRO_NATIVE_PATH_SEP ) );
+		al_set_path_filename( pPath, SAVE_GAME_NAME );
+		snprintf( szPath, sizeof( szPath ), "%s", al_path_cstr( pPath, ALLEGRO_NATIVE_PATH_SEP ) );
+		al_destroy_path( pPath );
+	}
+	else
+		snprintf( szPath, sizeof( szPath ), "%s", SAVE_GAME_NAME );
+
+	return szPath;
+}
+
+/*
 	Function:		SaveGame
 	Inputs:			None
 	Output:			Error number
@@ -3517,7 +3396,7 @@ int SaveGame( void )
 		usGameStats.m_Pockets[i].m_nAttrib = g_Pockets[i].m_nAttrib;
 	}
 
-	if( !g_lpCMaze->SaveMaze( SAVE_GAME_FILE, &usGameStats, sizeof( STATS ) ) )
+	if( !g_lpCMaze->SaveMaze( SaveGamePath(), &usGameStats, sizeof( STATS ) ) )
 		nRet = ERROR_SAVEGAME;
 
 	return nRet;
@@ -3536,7 +3415,7 @@ int LoadGame( void )
 	int i;
 	STATS usGameStats;
 
-	if( !g_lpCMaze->LoadMaze( SAVE_GAME_FILE, &usGameStats, sizeof( STATS ) ) )
+	if( !g_lpCMaze->LoadMaze( SaveGamePath(), &usGameStats, sizeof( STATS ) ) )
 	{
 		nRet = ERROR_LOADGAME;
 		goto function_exit;

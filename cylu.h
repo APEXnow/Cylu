@@ -29,20 +29,16 @@
 
 //#define _DESIGN_MODE_
 
+#include <allegro5/allegro.h>
+
 #include "./maze.h"			//	CMaze object that contains the game
 							//	play maze
 
 #define TEXT_STEP				12
 
-#ifdef _DEBUG
-#define GFX_MODE				GFX_GDI
-#else
-#define GFX_MODE				GFX_AUTODETECT_FULLSCREEN
-#endif
-
 #define GRX_WIDTH				640
 #define GRX_HEIGHT				480
-#define GRX_MAKECOL				makecol
+#define GRX_MAKECOL				al_map_rgb
 #define GRX_RED					0
 #define GRX_GREEN				0
 #define GRX_BLUE				0
@@ -67,27 +63,41 @@
 
 #define CONFIG_FILE				"cylu.cfg"
 
-#ifdef __DOS__
-#define DATA_FILE_NAME24		"./cylu.dat"		//	Data file containing level data and sprites
-#else
-#define DATA_FILE_NAME24		"./cylu.dat"		//	Data file containing level data and sprites
-#endif
+//	Game data, relative to the folder containing the executable
+#define SPRITE_MANIFEST			"data/manifest.txt"	//	Sprites converted from the original cylu.dat
+#define LEVEL_FILE				"data/level.cld"	//	Level data (also used by design mode)
 
-#define LEVEL_FILE				"./level.cld"		//	For use with design mode compiled into application
+//	Saved games go in the user's application data folder
+//	(e.g. %APPDATA%\Apex\Cylu on Windows)
+#define SAVE_GAME_NAME			"savegame"
 
-#ifdef __DOS__
-#define SAVE_GAME_FILE			"./savegame"	//	File to use for saving and loading game positions
+#if defined( _WIN64 )
+#define PLATFORM_NAME			"Windows (64-bit)"
+#elif defined( _WIN32 )
+#define PLATFORM_NAME			"Windows (32-bit)"
+#elif defined( __linux__ )
+#define PLATFORM_NAME			"Linux"
+#elif defined( __APPLE__ )
+#define PLATFORM_NAME			"macOS"
 #else
-#define SAVE_GAME_FILE			"./savegame"
+#define PLATFORM_NAME			"Unknown"
 #endif
 
 #define VER_RELEASE				' '
-#define VER_MAJOR				1
-#define VER_MINOR				6
+#define VER_MAJOR				2
+#define VER_MINOR				0
 #define VER_TITLE				"Cylu - Author: Paul S.J.Millard"
 
 //	Application defines for use in source
 #define BOOL					int
+
+#ifndef TRUE
+#define TRUE					1
+#endif
+
+#ifndef FALSE
+#define FALSE					0
+#endif
 
 #define OBJECT_FLOOR			0
 #define OBJECT_WALL				1
@@ -302,7 +312,7 @@ int Process( void );
 int Actions( void );
 
 void ShowFade( void );
-int ShowTitle( BITMAP *pCopy = NULL );
+int ShowTitle( ALLEGRO_BITMAP *pCopy = NULL );
 int ShowMenu( void );
 int ShowInstructions( void );
 int ShowWin( void );
@@ -323,12 +333,13 @@ int DisableShield( int nShield );
 int Transport( int nKeyAttrib );
 
 void ResetBouncyText( void );
-int PlaceBouncyText( char *szText, int nX, int nY, int nAllign = 0 );
+int PlaceBouncyText( const char *szText, int nX, int nY, int nAllign = 0 );
 int DoBouncyText( void );
 int PlaceCursors( int nLine );
 int DoCursors( void );
-int Fade( BITMAP *pBitmap, int nX, int nY, int nWidth, int nHeight );
+int Fade( ALLEGRO_BITMAP *pBitmap, int nX, int nY, int nWidth, int nHeight );
 
+const char *SaveGamePath( void );
 int SaveGame( void );
 int LoadGame( void );
 

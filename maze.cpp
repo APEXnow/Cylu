@@ -21,10 +21,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <io.h>
-#ifdef _DOS
-#include <unistd.h>
-#endif
 
 #include "maze.h"
 
@@ -152,7 +148,7 @@ void CMaze::GetMazeSize( int *lpnWidth, int *lpnHeight )
 	*lpnHeight = m_nHeight;
 }
 
-int CMaze::LoadMaze( char *lpszMazeName, void *pExtraData, int nSize )
+int CMaze::LoadMaze( const char *lpszMazeName, void *pExtraData, int nSize )
 {
 	int bRet = false;
 
@@ -164,12 +160,11 @@ int CMaze::LoadMaze( char *lpszMazeName, void *pExtraData, int nSize )
 	int nBuff;
 	FILE *pFileID;
 
-	if( _access( lpszMazeName, 0 )!=0 )
+	pFileID = fopen( lpszMazeName, "rb" );
+	if( !pFileID )
 		goto function_exit;
 
 	Deallocate();
-
-	pFileID = fopen( lpszMazeName, "rb" );
 
 	if( pFileID )
 	{
@@ -180,6 +175,7 @@ int CMaze::LoadMaze( char *lpszMazeName, void *pExtraData, int nSize )
 		if( nFileDescriptor!=FILE_ID )
 		{
 			printf( "Not a CLD descriptor\n" );
+			fclose( pFileID );
 			return bRet;
 		}
 		else
@@ -217,7 +213,7 @@ function_exit:
 	return bRet;
 }
 
-int CMaze::SaveMaze( char *lpszMazeName, void *pExtraData, int nSize )
+int CMaze::SaveMaze( const char *lpszMazeName, void *pExtraData, int nSize )
 {
 	int bRet = false;
 
@@ -266,55 +262,6 @@ int CMaze::ValidMaze( void )
 
 	if( m_lpCell )
 		bRet = true;
-
-	return bRet;
-}
-
-int CMaze::AcquireFromDataFile( DATAFILE *pFile, int nEntry )
-{
-	int bRet = false;
-
-	int nFileDescriptor = FILE_ID;
-	int nWidth;
-	int nHeight;
-	int nLoopx;
-	int nLoopy;
-	int *pBuff;
-
-	Deallocate();
-
-	if( pFile )
-	{
-		pBuff = (int*)pFile[ nEntry ].dat;
-
-		nFileDescriptor = *pBuff++;
-		nWidth = *pBuff++;
-		nHeight = *pBuff++;
-
-		if( nFileDescriptor!=FILE_ID )
-		{
-			printf( "Not a CLD descriptor\n" );
-			return bRet;
-		}
-		else
-		{
-			if( Allocate( nWidth, nHeight ) )
-			{
-				for( nLoopy=0; nLoopy<nHeight; nLoopy++ )
-				{
-					for( nLoopx=0; nLoopx<nWidth; nLoopx++ )
-					{
-						SetCell( nLoopx, nLoopy, CELL_OBJECT, *pBuff++ );
-						SetCell( nLoopx, nLoopy, CELL_ATTRIBUTE, *pBuff++ );
-					}
-				}
-			}
-		}
-
-		bRet = true;
-	}
-	else
-		printf( "Failed to load CLD maze file\n" );
 
 	return bRet;
 }

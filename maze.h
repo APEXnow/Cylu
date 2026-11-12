@@ -18,7 +18,8 @@
 #ifndef _MAZE_H_
 #define _MAZE_H_
 
-#include <allegro.h>
+#include <stddef.h>
+
 
 #define CELL_OBJECT				0
 #define CELL_ATTRIBUTE			1
@@ -57,14 +58,13 @@ private:
 //	Public Member Functions
 public:
 	int CreateMaze( int nWidth, int nHeight );
-	int LoadMaze( char *lpszMazeName, void *pExtraData = NULL, int nSize = NULL );
-	int SaveMaze( char *lpszMazeName, void *pExtraData = NULL, int nSize = NULL );
+	int LoadMaze( const char *lpszMazeName, void *pExtraData = NULL, int nSize = 0 );
+	int SaveMaze( const char *lpszMazeName, void *pExtraData = NULL, int nSize = 0 );
 	void DestroyMaze( void );
 	int SetCell( int nXPos, int nYPos, int nFlag, int nValue );
 	int GetCell( int nXPos, int nYPos, int nFlag );
 	void GetMazeSize( int *lpnWidth, int *lpnHeight );
 	int ValidMaze( void );
-	int AcquireFromDataFile( DATAFILE *pFile, int nEntry );
 };
 
 #endif
