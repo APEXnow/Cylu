@@ -1,0 +1,547 @@
+;POVLAB version 4.00 SP4 - ascii scene for 3D modeller.
+;(C) 1998, Denis Olivier.
+;All rights reserved.
+;Date=Saturday 09-01-2001.
+;Time=04:50:12.
+;user_name=USER
+NbRendu=192
+ColorCamera=4
+ColorViewport=0
+ColorTextBackground=8
+ColorSelection=6
+ColorInterface=7
+ColorAxis=5
+ColorGrid=2
+GrilleType=0
+CurrentViewport=2
+Viewportx4=1
+DisplayAxis=1
+DisplayGrid=0
+CurrentTexture=C1b
+CurrentCamera=1
+BackgroundImageRGB: 255 0 255
+FogLayer: 0 255 255 255 0 0 1 0 0 0 0
+FogLayer: 1 255 255 255 0 10 1 0 1 0 0
+FogLayer: 2 255 255 255 0 10 1 0 1 0 0
+FogLayer: 3 255 255 255 0 10 1 0 1 0 0
+FogLayer: 4 255 255 255 0 10 1 0 1 0 0
+Atmosphere: 0 1 10 0.1 0 20 0.25 0.1 8 0 0 0
+UseSelection: 1
+RayGlobal: 0.003922 2.2 3 64 10 0.25 0.18 0.14
+Radiosity: 0 5 3.3 800 0 0.2 0.5 0.7 0.01 9 1
+Scale-X/Y F0: 21.55
+Shift-X F0: 0.1957
+Shift-Y F0: 0.1689
+Scale-X/Y F1: 32.68
+Shift-X F1: 0.004695
+Shift-Y F1: 1.093
+Scale-X/Y F2: 57.41
+Shift-X F2: 0.5532
+Shift-Y F2: -0.1575
+Scale-X/Y F3: 45
+Shift-X F3: 0
+Shift-Y F3: 0
+Camera: 0 -215 370.9 0 -0.0135 0 1 51.07 0 0 24 0 0 1 0
+Display_Camera: 1
+
+Omni 001: 4.787 -8.475 9.04 255 255 255 12 1 1 100 1 0 0 0 NONE
+Display_Omni: 1
+
+Nb-Object: 17
+
+[EndInitSection]
+
+Object 00001: 2
+Object 00001: 0 0 0
+Object 00001: 1.06 1.3 1.06
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 13
+Object 00001: Default
+Object 00001: 0
+Object 00001: 1
+Object 00001: Primary
+Object 00001: -1
+Object 00001: 0
+Object 00001: 1 1 1
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 1
+Object 00001: 0
+Object 00001: 1
+Object 00001: 0 0
+Object 00001: 0
+Object 00001: 1
+Object 00001: 1
+Object 00001: 0.00 0 0 0 50 0 0 0 0 0 0 0 0 0
+Object 00001: 0000000000000
+Object 00001: 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: 0 0
+
+Object 00002: 0
+Object 00002: 0 0 0
+Object 00002: 0.06 1.28 0.06
+Object 00002: 0 0 0
+Object 00002: 0 0.04 0
+Object 00002: 7
+Object 00002: Pacific
+Object 00002: 0
+Object 00002: 0
+Object 00002: Cyli0000
+Object 00002: -1
+Object 00002: 0
+Object 00002: 1 1 1
+Object 00002: 0 0 0
+Object 00002: 0 0 0
+Object 00002: 1
+Object 00002: 0
+Object 00002: 0
+Object 00002: 0 0
+Object 00002: 0
+Object 00002: 1
+Object 00002: 1
+Object 00002: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00002: 0000000000000
+Object 00002: 1 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: 0 0
+
+Object 00003: 1
+Object 00003: 0 0 0
+Object 00003: 0.15 0.15 0.15
+Object 00003: 0 0 0
+Object 00003: 0 -1.15 0
+Object 00003: 7
+Object 00003: Green_Plastic
+Object 00003: 0
+Object 00003: 0
+Object 00003: Sphe0000
+Object 00003: -1
+Object 00003: 0
+Object 00003: 1 1 1
+Object 00003: 0 0 0
+Object 00003: 0 0 0
+Object 00003: 1
+Object 00003: 0
+Object 00003: 0
+Object 00003: 0 0
+Object 00003: 0
+Object 00003: 1
+Object 00003: 1
+Object 00003: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00003: 0000000000000
+Object 00003: 1 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: 0 0
+
+Object 00004: 1
+Object 00004: 0 0 0
+Object 00004: 0.2 0.2 0.2
+Object 00004: 1.002e-005 1.01e-005 5.973e-014
+Object 00004: -0.9988 -0.9 -0.003101
+Object 00004: 7
+Object 00004: LimogesOpakTex
+Object 00004: 1
+Object 00004: 0
+Object 00004: Sphe0001
+Object 00004: -1
+Object 00004: 0
+Object 00004: 1 1 1
+Object 00004: 0 0 0
+Object 00004: 0 0 0
+Object 00004: 1
+Object 00004: 0
+Object 00004: 0
+Object 00004: 1 0
+Object 00004: 0
+Object 00004: 1
+Object 00004: 1
+Object 00004: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00004: 0000000000000
+Object 00004: 0 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: 0 0
+
+Object 00005: 2
+Object 00005: 0 0 0
+Object 00005: 0.3 0.3 0.3
+Object 00005: 1.002e-005 1.01e-005 5.973e-014
+Object 00005: -0.9988 -0.9 0.2969
+Object 00005: 7
+Object 00005: Default
+Object 00005: 1
+Object 00005: 0
+Object 00005: Cube0000
+Object 00005: -1
+Object 00005: 0
+Object 00005: 1 1 1
+Object 00005: 0 0 0
+Object 00005: 0 0 0
+Object 00005: 1
+Object 00005: 0
+Object 00005: 0
+Object 00005: 4 0
+Object 00005: 4
+Object 00005: 1
+Object 00005: 1
+Object 00005: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00005: 0000000000000
+Object 00005: 1 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: 0 0
+
+Object 00006: 1
+Object 00006: 0 0 0
+Object 00006: 0.19 0.19 0.19
+Object 00006: 1.002e-005 1.01e-005 5.973e-014
+Object 00006: -0.9988 -0.9 -0.003101
+Object 00006: 7
+Object 00006: Pierre4
+Object 00006: 1
+Object 00006: 0
+Object 00006: Sphe0002
+Object 00006: -1
+Object 00006: 0
+Object 00006: 1 1 1
+Object 00006: 0 0 0
+Object 00006: 0 0 0
+Object 00006: 1
+Object 00006: 0
+Object 00006: 0
+Object 00006: 4 0
+Object 00006: 4
+Object 00006: 1
+Object 00006: 1
+Object 00006: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00006: 0000000000000
+Object 00006: 1 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: 0 0
+
+Object 00007: 1
+Object 00007: 0 0 0
+Object 00007: 0.2 0.2 0.2
+Object 00007: 101.6 270 258.4
+Object 00007: -0.003135 -0.9 -1
+Object 00007: 7
+Object 00007: LimogesOpakTex
+Object 00007: 1
+Object 00007: 0
+Object 00007: Sphe0003
+Object 00007: -1
+Object 00007: 0
+Object 00007: 1 1 1
+Object 00007: 0 0 0
+Object 00007: 0 0 0
+Object 00007: 1
+Object 00007: 0
+Object 00007: 0
+Object 00007: 1 0
+Object 00007: 0
+Object 00007: 1
+Object 00007: 1
+Object 00007: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00007: 0000000000000
+Object 00007: 0 0
+Object 00007: # 0 0 0 0 0 0 0 0
+Object 00007: # 0 0 0 0 0 0 0 0
+Object 00007: 0 0
+
+Object 00008: 2
+Object 00008: 0 0 0
+Object 00008: 0.3 0.3 0.3
+Object 00008: 101.6 270 258.4
+Object 00008: -0.3032 -0.9 -1
+Object 00008: 7
+Object 00008: Default
+Object 00008: 1
+Object 00008: 0
+Object 00008: Cube0001
+Object 00008: -1
+Object 00008: 0
+Object 00008: 1 1 1
+Object 00008: 0 0 0
+Object 00008: 0 0 0
+Object 00008: 1
+Object 00008: 0
+Object 00008: 0
+Object 00008: 4 0
+Object 00008: 7
+Object 00008: 1
+Object 00008: 1
+Object 00008: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00008: 0000000000000
+Object 00008: 1 0
+Object 00008: # 0 0 0 0 0 0 0 0
+Object 00008: # 0 0 0 0 0 0 0 0
+Object 00008: 0 0
+
+Object 00009: 1
+Object 00009: 0 0 0
+Object 00009: 0.19 0.19 0.19
+Object 00009: 101.6 270 258.4
+Object 00009: -0.003135 -0.9 -1
+Object 00009: 7
+Object 00009: Pierre4
+Object 00009: 1
+Object 00009: 0
+Object 00009: Sphe0004
+Object 00009: -1
+Object 00009: 0
+Object 00009: 1 1 1
+Object 00009: 0 0 0
+Object 00009: 0 0 0
+Object 00009: 1
+Object 00009: 0
+Object 00009: 0
+Object 00009: 4 0
+Object 00009: 7
+Object 00009: 1
+Object 00009: 1
+Object 00009: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00009: 0000000000000
+Object 00009: 1 0
+Object 00009: # 0 0 0 0 0 0 0 0
+Object 00009: # 0 0 0 0 0 0 0 0
+Object 00009: 0 0
+
+Object 00010: 1
+Object 00010: 0 0 0
+Object 00010: 0.2 0.2 0.2
+Object 00010: 180 360 180
+Object 00010: 0.9975 -0.9 -0.004315
+Object 00010: 7
+Object 00010: LimogesOpakTex
+Object 00010: 1
+Object 00010: 0
+Object 00010: Sphe0005
+Object 00010: -1
+Object 00010: 0
+Object 00010: 1 1 1
+Object 00010: 0 0 0
+Object 00010: 0 0 0
+Object 00010: 1
+Object 00010: 0
+Object 00010: 0
+Object 00010: 1 0
+Object 00010: 0
+Object 00010: 1
+Object 00010: 1
+Object 00010: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00010: 0000000000000
+Object 00010: 0 0
+Object 00010: # 0 0 0 0 0 0 0 0
+Object 00010: # 0 0 0 0 0 0 0 0
+Object 00010: 0 0
+
+Object 00011: 2
+Object 00011: 0 0 0
+Object 00011: 0.3 0.3 0.3
+Object 00011: 180 360 180
+Object 00011: 0.9975 -0.9 -0.3044
+Object 00011: 7
+Object 00011: Default
+Object 00011: 1
+Object 00011: 0
+Object 00011: Cube0002
+Object 00011: -1
+Object 00011: 0
+Object 00011: 1 1 1
+Object 00011: 0 0 0
+Object 00011: 0 0 0
+Object 00011: 1
+Object 00011: 0
+Object 00011: 0
+Object 00011: 4 0
+Object 00011: 10
+Object 00011: 1
+Object 00011: 1
+Object 00011: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00011: 0000000000000
+Object 00011: 1 0
+Object 00011: # 0 0 0 0 0 0 0 0
+Object 00011: # 0 0 0 0 0 0 0 0
+Object 00011: 0 0
+
+Object 00012: 1
+Object 00012: 0 0 0
+Object 00012: 0.19 0.19 0.19
+Object 00012: 180 360 180
+Object 00012: 0.9975 -0.9 -0.004315
+Object 00012: 7
+Object 00012: Pierre4
+Object 00012: 1
+Object 00012: 0
+Object 00012: Sphe0006
+Object 00012: -1
+Object 00012: 0
+Object 00012: 1 1 1
+Object 00012: 0 0 0
+Object 00012: 0 0 0
+Object 00012: 1
+Object 00012: 0
+Object 00012: 0
+Object 00012: 4 0
+Object 00012: 10
+Object 00012: 1
+Object 00012: 1
+Object 00012: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00012: 0000000000000
+Object 00012: 1 0
+Object 00012: # 0 0 0 0 0 0 0 0
+Object 00012: # 0 0 0 0 0 0 0 0
+Object 00012: 0 0
+
+Object 00013: 1
+Object 00013: 0 0 0
+Object 00013: 0.2 0.2 0.2
+Object 00013: 119.8 90 119.8
+Object 00013: 0.001821 -0.9 0.9996
+Object 00013: 7
+Object 00013: LimogesOpakTex
+Object 00013: 1
+Object 00013: 0
+Object 00013: Sphe0007
+Object 00013: -1
+Object 00013: 0
+Object 00013: 1 1 1
+Object 00013: 0 0 0
+Object 00013: 0 0 0
+Object 00013: 1
+Object 00013: 0
+Object 00013: 0
+Object 00013: 1 0
+Object 00013: 0
+Object 00013: 1
+Object 00013: 1
+Object 00013: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00013: 0000000000000
+Object 00013: 0 0
+Object 00013: # 0 0 0 0 0 0 0 0
+Object 00013: # 0 0 0 0 0 0 0 0
+Object 00013: 0 0
+
+Object 00014: 2
+Object 00014: 0 0 0
+Object 00014: 0.3 0.3 0.3
+Object 00014: 119.8 90 119.8
+Object 00014: 0.3018 -0.9 0.9996
+Object 00014: 7
+Object 00014: Default
+Object 00014: 1
+Object 00014: 0
+Object 00014: Cube0003
+Object 00014: -1
+Object 00014: 0
+Object 00014: 1 1 1
+Object 00014: 0 0 0
+Object 00014: 0 0 0
+Object 00014: 1
+Object 00014: 0
+Object 00014: 0
+Object 00014: 4 0
+Object 00014: 13
+Object 00014: 1
+Object 00014: 1
+Object 00014: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00014: 0000000000000
+Object 00014: 1 0
+Object 00014: # 0 0 0 0 0 0 0 0
+Object 00014: # 0 0 0 0 0 0 0 0
+Object 00014: 0 0
+
+Object 00015: 1
+Object 00015: 0 0 0
+Object 00015: 0.19 0.19 0.19
+Object 00015: 119.8 90 119.8
+Object 00015: 0.001821 -0.9 0.9996
+Object 00015: 7
+Object 00015: Pierre4
+Object 00015: 1
+Object 00015: 0
+Object 00015: Sphe0008
+Object 00015: -1
+Object 00015: 0
+Object 00015: 1 1 1
+Object 00015: 0 0 0
+Object 00015: 0 0 0
+Object 00015: 1
+Object 00015: 0
+Object 00015: 0
+Object 00015: 4 0
+Object 00015: 13
+Object 00015: 1
+Object 00015: 1
+Object 00015: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00015: 0000000000000
+Object 00015: 1 0
+Object 00015: # 0 0 0 0 0 0 0 0
+Object 00015: # 0 0 0 0 0 0 0 0
+Object 00015: 0 0
+
+Object 00016: 0
+Object 00016: 0 0 0
+Object 00016: 0.02 0.82 0.02
+Object 00016: 180 360 90
+Object 00016: -0.0009067 -0.9 -0.001414
+Object 00016: 7
+Object 00016: C1b
+Object 00016: 1
+Object 00016: 0
+Object 00016: Cyli0001
+Object 00016: -1
+Object 00016: 0
+Object 00016: 1 1 1
+Object 00016: 0 0 0
+Object 00016: 0 0 0
+Object 00016: 1
+Object 00016: 0
+Object 00016: 0
+Object 00016: 0 0
+Object 00016: 0
+Object 00016: 1
+Object 00016: 1
+Object 00016: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00016: 0000000000000
+Object 00016: 1 0
+Object 00016: # 0 0 0 0 0 0 0 0
+Object 00016: # 0 0 0 0 0 0 0 0
+Object 00016: 0 0
+
+Object 00017: 0
+Object 00017: 0 0 0
+Object 00017: 0.02 0.82 0.02
+Object 00017: 90 360 90
+Object 00017: -0.0009067 -0.9 -0.001414
+Object 00017: 7
+Object 00017: C1b
+Object 00017: 1
+Object 00017: 0
+Object 00017: Cyli0002
+Object 00017: -1
+Object 00017: 0
+Object 00017: 1 1 1
+Object 00017: 0 0 0
+Object 00017: 0 0 0
+Object 00017: 1
+Object 00017: 0
+Object 00017: 0
+Object 00017: 0 0
+Object 00017: 0
+Object 00017: 1
+Object 00017: 1
+Object 00017: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00017: 0000000000000
+Object 00017: 1 0
+Object 00017: # 0 0 0 0 0 0 0 0
+Object 00017: # 0 0 0 0 0 0 0 0
+Object 00017: 0 0
+
+End of file: FAN9.SCN

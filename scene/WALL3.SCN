@@ -1,0 +1,286 @@
+;POVLAB version 4.00 SP4 - ascii scene for 3D modeller.
+;(C) 1998, Denis Olivier.
+;All rights reserved.
+;Date=Friday 08-31-2001.
+;Time=16:05:07.
+;user_name=USER
+NbRendu=161
+ColorCamera=4
+ColorViewport=0
+ColorTextBackground=8
+ColorSelection=6
+ColorInterface=7
+ColorAxis=5
+ColorGrid=2
+GrilleType=1
+CurrentViewport=1
+Viewportx4=1
+DisplayAxis=1
+DisplayGrid=1
+CurrentTexture=Red_Plastic
+CurrentCamera=1
+BackgroundImageRGB: 255 0 255
+FogLayer: 0 255 255 255 0 0 1 0 0 0 0
+FogLayer: 1 255 255 255 0 10 1 0 1 0 0
+FogLayer: 2 255 255 255 0 10 1 0 1 0 0
+FogLayer: 3 255 255 255 0 10 1 0 1 0 0
+FogLayer: 4 255 255 255 0 10 1 0 1 0 0
+Atmosphere: 0 1 10 0.1 0 20 0.25 0.1 8 0 0 0
+UseSelection: 0
+RayGlobal: 0.003922 2.2 3 64 10 0.25 0.18 0.14
+Radiosity: 0 5 3.3 800 0 0.2 0.5 0.7 0.01 9 1
+Scale-X/Y F0: 21.55
+Shift-X F0: 0.1957
+Shift-Y F0: 0.1689
+Scale-X/Y F1: 54.14
+Shift-X F1: 0.1277
+Shift-Y F1: 0.09612
+Scale-X/Y F2: 24.33
+Shift-X F2: 0.2835
+Shift-Y F2: -0.1749
+Scale-X/Y F3: 45
+Shift-X F3: 0
+Shift-Y F3: 0
+Camera: 0 -215 370.9 0 -0.0135 0 1 51.07 0 0 24 0 0 1 0
+Display_Camera: 1
+
+Omni 001: 4.787 -8.475 9.04 255 255 255 12 1 1 100 1 0 0 0 NONE
+Display_Omni: 1
+
+Nb-Object: 8
+
+[EndInitSection]
+
+Object 00001: 2
+Object 00001: 0 0 0
+Object 00001: 1.06 1.3 1.06
+Object 00001: 0 45 0
+Object 00001: 0 0 0
+Object 00001: 13
+Object 00001: Default
+Object 00001: 0
+Object 00001: 1
+Object 00001: Primary
+Object 00001: -1
+Object 00001: 0
+Object 00001: 1 1 1
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 1
+Object 00001: 0
+Object 00001: 1
+Object 00001: 0 0
+Object 00001: 0
+Object 00001: 1
+Object 00001: 1
+Object 00001: 0.00 0 0 0 50 0 0 0 0 0 0 0 0 0
+Object 00001: 0000000000000
+Object 00001: 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: 0 0
+
+Object 00002: 4
+Object 00002: 0.8023 0.1977 0.9977
+Object 00002: 0.9977 0.1972 0.9977
+Object 00002: 0 0 0
+Object 00002: -0.01008 -0.7686 1.537e-008
+Object 00002: 7
+Object 00002: Red_Plastic
+Object 00002: 0
+Object 00002: 0
+Object 00002: Tore0000
+Object 00002: -1
+Object 00002: 0
+Object 00002: 1 1 1
+Object 00002: 0 0 0
+Object 00002: 0 0 0
+Object 00002: 1
+Object 00002: 0
+Object 00002: 0
+Object 00002: 0 0
+Object 00002: 0
+Object 00002: 1
+Object 00002: 1
+Object 00002: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00002: 0000000000000
+Object 00002: 1 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: 0 0
+
+Object 00003: 4
+Object 00003: 0.8023 0.1977 0.9977
+Object 00003: 0.9977 0.1972 0.9977
+Object 00003: 0 0 0
+Object 00003: -0.01008 0.8016 1.444e-008
+Object 00003: 7
+Object 00003: Red_Plastic
+Object 00003: 0
+Object 00003: 0
+Object 00003: Tore0001
+Object 00003: -1
+Object 00003: 0
+Object 00003: 1 1 1
+Object 00003: 0 0 0
+Object 00003: 0 0 0
+Object 00003: 1
+Object 00003: 0
+Object 00003: 0
+Object 00003: 0 0
+Object 00003: 0
+Object 00003: 1
+Object 00003: 1
+Object 00003: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00003: 0000000000000
+Object 00003: 1 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: 0 0
+
+Object 00004: 4
+Object 00004: 0.8023 0.1977 0.9977
+Object 00004: 0.9977 0.1972 0.9977
+Object 00004: 0 0 0
+Object 00004: -0.01008 0.4136 1.537e-008
+Object 00004: 7
+Object 00004: Red_Plastic
+Object 00004: 0
+Object 00004: 0
+Object 00004: Tore0002
+Object 00004: -1
+Object 00004: 0
+Object 00004: 1 1 1
+Object 00004: 0 0 0
+Object 00004: 0 0 0
+Object 00004: 1
+Object 00004: 0
+Object 00004: 0
+Object 00004: 0 0
+Object 00004: 0
+Object 00004: 1
+Object 00004: 1
+Object 00004: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00004: 0000000000000
+Object 00004: 1 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: 0 0
+
+Object 00005: 4
+Object 00005: 0.8023 0.1977 0.9977
+Object 00005: 0.9977 0.1972 0.9977
+Object 00005: 0 0 0
+Object 00005: -0.01008 0.02573 1.537e-008
+Object 00005: 7
+Object 00005: Red_Plastic
+Object 00005: 0
+Object 00005: 0
+Object 00005: Tore0003
+Object 00005: -1
+Object 00005: 0
+Object 00005: 1 1 1
+Object 00005: 0 0 0
+Object 00005: 0 0 0
+Object 00005: 1
+Object 00005: 0
+Object 00005: 0
+Object 00005: 0 0
+Object 00005: 0
+Object 00005: 1
+Object 00005: 1
+Object 00005: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00005: 0000000000000
+Object 00005: 1 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: 0 0
+
+Object 00006: 4
+Object 00006: 0.8023 0.1977 0.9977
+Object 00006: 0.9977 0.1972 0.9977
+Object 00006: 0 0 0
+Object 00006: -0.01008 -0.3622 7.404e-008
+Object 00006: 7
+Object 00006: Red_Plastic
+Object 00006: 0
+Object 00006: 0
+Object 00006: Tore0004
+Object 00006: -1
+Object 00006: 0
+Object 00006: 1 1 1
+Object 00006: 0 0 0
+Object 00006: 0 0 0
+Object 00006: 1
+Object 00006: 0
+Object 00006: 0
+Object 00006: 0 0
+Object 00006: 0
+Object 00006: 1
+Object 00006: 1
+Object 00006: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00006: 0000000000000
+Object 00006: 1 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: 0 0
+
+Object 00007: 2
+Object 00007: 0 0 0
+Object 00007: 1.06 0.15 1.06
+Object 00007: 0 45 0
+Object 00007: 0 1.15 0
+Object 00007: 7
+Object 00007: Stone27
+Object 00007: 0
+Object 00007: 0
+Object 00007: Cube0000
+Object 00007: -1
+Object 00007: 0
+Object 00007: 1 1 1
+Object 00007: 0 0 0
+Object 00007: 0 0 0
+Object 00007: 1
+Object 00007: 0
+Object 00007: 0
+Object 00007: 0 0
+Object 00007: 0
+Object 00007: 1
+Object 00007: 1
+Object 00007: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00007: 0000000000000
+Object 00007: 1 0
+Object 00007: # 0 0 0 0 0 0 0 0
+Object 00007: # 0 0 0 0 0 0 0 0
+Object 00007: 0 0
+
+Object 00008: 0
+Object 00008: 0 0 0
+Object 00008: 0.5 1.3 0.5
+Object 00008: 0 0 0
+Object 00008: 0 0 0
+Object 00008: 13
+Object 00008: Default
+Object 00008: 0
+Object 00008: 0
+Object 00008: Cyli0000
+Object 00008: -1
+Object 00008: 0
+Object 00008: 1 1 1
+Object 00008: 0 0 0
+Object 00008: 0 0 0
+Object 00008: 1
+Object 00008: 0
+Object 00008: 0
+Object 00008: 0 0
+Object 00008: 0
+Object 00008: 1
+Object 00008: 1
+Object 00008: 0.00 0 0 0 52 0 83 71 0 0 0 0 80 52
+Object 00008: 0000100000000
+Object 00008: 1 0
+Object 00008: # 0 0 0 0 0 0 0 0
+Object 00008: # 0 0 0 0 0 0 0 0
+Object 00008: 0 0
+
+End of file: WALL3.SCN

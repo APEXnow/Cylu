@@ -1,0 +1,228 @@
+;POVLAB version 4.00 SP4 - ascii scene for 3D modeller.
+;(C) 1998, Denis Olivier.
+;All rights reserved.
+;Date=Sunday 09-02-2001.
+;Time=21:42:28.
+;user_name=USER
+NbRendu=170
+ColorCamera=4
+ColorViewport=0
+ColorTextBackground=8
+ColorSelection=6
+ColorInterface=7
+ColorAxis=5
+ColorGrid=2
+GrilleType=1
+CurrentViewport=3
+Viewportx4=1
+DisplayAxis=1
+DisplayGrid=1
+CurrentTexture=Pierre4
+CurrentCamera=1
+BackgroundImageRGB: 255 0 255
+FogLayer: 0 255 255 255 0 0 1 0 0 0 0
+FogLayer: 1 255 255 255 0 10 1 0 1 0 0
+FogLayer: 2 255 255 255 0 10 1 0 1 0 0
+FogLayer: 3 255 255 255 0 10 1 0 1 0 0
+FogLayer: 4 255 255 255 0 10 1 0 1 0 0
+Atmosphere: 0 1 10 0.1 0 20 0.25 0.1 8 0 0 0
+UseSelection: 0
+RayGlobal: 0.003922 2.2 3 64 10 0.25 0.18 0.14
+Radiosity: 0 5 3.3 800 0 0.2 0.5 0.7 0.01 9 1
+Scale-X/Y F0: 45.21
+Shift-X F0: 0.4952
+Shift-Y F0: -0.2855
+Scale-X/Y F1: 33.25
+Shift-X F1: -0.8723
+Shift-Y F1: -1.904
+Scale-X/Y F2: 56.28
+Shift-X F2: 0.2835
+Shift-Y F2: -0.1749
+Scale-X/Y F3: 45
+Shift-X F3: 0
+Shift-Y F3: 0
+Camera: 0 -215 370.9 0 -0.0135 0 1 51.07 0 0 24 0 0 1 0
+Display_Camera: 1
+
+Omni 001: 4.787 -8.475 9.04 255 255 255 12 1 1 100 1 0 0 0 NONE
+Display_Omni: 1
+
+Nb-Object: 6
+
+[EndInitSection]
+
+Object 00001: 2
+Object 00001: 0 0 0
+Object 00001: 1.06 1.3 1.06
+Object 00001: 0 45 0
+Object 00001: 0 0 0
+Object 00001: 13
+Object 00001: Default
+Object 00001: 0
+Object 00001: 1
+Object 00001: Primary
+Object 00001: -1
+Object 00001: 0
+Object 00001: 1 1 1
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 1
+Object 00001: 0
+Object 00001: 1
+Object 00001: 0 0
+Object 00001: 0
+Object 00001: 1
+Object 00001: 1
+Object 00001: 0.00 0 0 0 50 0 0 0 0 0 0 0 0 0
+Object 00001: 0000000000000
+Object 00001: 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: 0 0
+
+Object 00002: 19
+Object 00002: 0 0 0
+Object 00002: 0.53 1.3 0.53
+Object 00002: 0 315 0
+Object 00002: 0.7495 0 0
+Object 00002: 7
+Object 00002: Pierre4
+Object 00002: 0
+Object 00002: 0
+Object 00002: Pyra0000
+Object 00002: -1
+Object 00002: 0
+Object 00002: 1 1 1
+Object 00002: 0 0 0
+Object 00002: 0 0 0
+Object 00002: 1
+Object 00002: 0
+Object 00002: 0
+Object 00002: 0 0
+Object 00002: 0
+Object 00002: 0
+Object 00002: 1
+Object 00002: 0.00 0 0 0 0 0 0 0 0 0 0 0 76 0
+Object 00002: 0000000000001
+Object 00002: 1 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: 0 0
+
+Object 00003: 19
+Object 00003: 0 0 0
+Object 00003: 0.53 1.3 0.53
+Object 00003: 0 315 0
+Object 00003: 0 0 -0.7495
+Object 00003: 7
+Object 00003: Pierre4
+Object 00003: 0
+Object 00003: 0
+Object 00003: Pyra0001
+Object 00003: -1
+Object 00003: 0
+Object 00003: 1 1 1
+Object 00003: 0 0 0
+Object 00003: 0 0 0
+Object 00003: 1
+Object 00003: 0
+Object 00003: 0
+Object 00003: 0 0
+Object 00003: 0
+Object 00003: 0
+Object 00003: 1
+Object 00003: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00003: 0000000000000
+Object 00003: 1 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: 0 0
+
+Object 00004: 19
+Object 00004: 0 0 0
+Object 00004: 0.53 1.3 0.53
+Object 00004: 0 315 0
+Object 00004: 0 0 0.7495
+Object 00004: 7
+Object 00004: Pierre4
+Object 00004: 0
+Object 00004: 0
+Object 00004: Pyra0002
+Object 00004: -1
+Object 00004: 0
+Object 00004: 1 1 1
+Object 00004: 0 0 0
+Object 00004: 0 0 0
+Object 00004: 1
+Object 00004: 0
+Object 00004: 0
+Object 00004: 0 0
+Object 00004: 0
+Object 00004: 0
+Object 00004: 1
+Object 00004: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00004: 0000000000000
+Object 00004: 1 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: # 0 0 0 0 0 0 0 0
+Object 00004: 0 0
+
+Object 00005: 19
+Object 00005: 0 0 0
+Object 00005: 0.53 1.3 0.53
+Object 00005: 0 315 0
+Object 00005: -0.7495 0 0
+Object 00005: 7
+Object 00005: Pierre4
+Object 00005: 0
+Object 00005: 0
+Object 00005: Pyra0003
+Object 00005: -1
+Object 00005: 0
+Object 00005: 1 1 1
+Object 00005: 0 0 0
+Object 00005: 0 0 0
+Object 00005: 1
+Object 00005: 0
+Object 00005: 0
+Object 00005: 0 0
+Object 00005: 0
+Object 00005: 0
+Object 00005: 1
+Object 00005: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00005: 0000000000000
+Object 00005: 1 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: # 0 0 0 0 0 0 0 0
+Object 00005: 0 0
+
+Object 00006: 2
+Object 00006: 0 0 0
+Object 00006: 1.06 0.2 1.06
+Object 00006: 0 45 0
+Object 00006: 0 1.1 0
+Object 00006: 7
+Object 00006: White_Vein_Black_Marble
+Object 00006: 0
+Object 00006: 0
+Object 00006: Cube0000
+Object 00006: -1
+Object 00006: 0
+Object 00006: 1 1 1
+Object 00006: 0 0 0
+Object 00006: 0 0 0
+Object 00006: 1
+Object 00006: 0
+Object 00006: 0
+Object 00006: 0 0
+Object 00006: 0
+Object 00006: 1
+Object 00006: 1
+Object 00006: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00006: 0000000000000
+Object 00006: 1 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: # 0 0 0 0 0 0 0 0
+Object 00006: 0 0
+
+End of file: WALL4.SCN

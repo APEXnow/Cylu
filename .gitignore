@@ -1,0 +1,25 @@
+# Temporary backup / tooling scratch
+_original/
+tools/__pycache__/
+
+# Old binaries (not rebuilt from source; alleg40.dll came from a third-party DLL site)
+alleg40.dll
+How to fix Alleg40.dll errors - DLLDownloader.com.txt
+cylu.exe
+*.o
+
+# Runtime state
+savegame
+cylu.cfg
+
+# Visual Studio
+.vs/
+x64/
+Win32/
+packages/
+*.user
+*.VC.db
+*.ipch
+build/
+bin/
+obj/

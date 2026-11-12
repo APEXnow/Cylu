@@ -1,0 +1,141 @@
+;POVLAB version 4.00 SP4 - ascii scene for 3D modeller.
+;(C) 1998, Denis Olivier.
+;All rights reserved.
+;Date=Saturday 09-01-2001.
+;Time=09:28:50.
+;user_name=USER
+NbRendu=180
+ColorCamera=4
+ColorViewport=0
+ColorTextBackground=8
+ColorSelection=6
+ColorInterface=7
+ColorAxis=5
+ColorGrid=2
+GrilleType=1
+CurrentViewport=1
+Viewportx4=1
+DisplayAxis=1
+DisplayGrid=1
+CurrentTexture=Cool
+CurrentCamera=1
+BackgroundImageRGB: 255 0 255
+FogLayer: 0 255 255 255 0 0 1 0 0 0 0
+FogLayer: 1 255 255 255 0 10 1 0 1 0 0
+FogLayer: 2 255 255 255 0 10 1 0 1 0 0
+FogLayer: 3 255 255 255 0 10 1 0 1 0 0
+FogLayer: 4 255 255 255 0 10 1 0 1 0 0
+Atmosphere: 0 1 10 0.1 0 20 0.25 0.1 8 0 0 0
+UseSelection: 1
+RayGlobal: 0.003922 2.2 3 64 10 0.25 0.18 0.14
+Radiosity: 0 5 3.3 800 0 0.2 0.5 0.7 0.01 9 1
+Scale-X/Y F0: 60.38
+Shift-X F0: 0.1957
+Shift-Y F0: 0.1689
+Scale-X/Y F1: 47.53
+Shift-X F1: 0.128
+Shift-Y F1: 0.096
+Scale-X/Y F2: 71.56
+Shift-X F2: 0.06416
+Shift-Y F2: -0.01039
+Scale-X/Y F3: 45
+Shift-X F3: 0
+Shift-Y F3: 0
+Camera: 0 -215 370.9 0 -0.0135 0 1 51.07 0 0 24 0 0 1 0
+Display_Camera: 1
+
+Omni 001: 4.787 -8.475 9.04 255 255 255 12 1 1 100 1 0 0 0 NONE
+Display_Omni: 1
+
+Nb-Object: 3
+
+[EndInitSection]
+
+Object 00001: 2
+Object 00001: 0 0 0
+Object 00001: 1.06 1.3 1.06
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 13
+Object 00001: Default
+Object 00001: 0
+Object 00001: 1
+Object 00001: Primary
+Object 00001: -1
+Object 00001: 0
+Object 00001: 1 1 1
+Object 00001: 0 0 0
+Object 00001: 0 0 0
+Object 00001: 1
+Object 00001: 0
+Object 00001: 1
+Object 00001: 0 0
+Object 00001: 0
+Object 00001: 1
+Object 00001: 1
+Object 00001: 0.00 0 0 0 50 0 0 0 0 0 0 0 0 0
+Object 00001: 0000000000000
+Object 00001: 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: # 0 0 0 0 0 0 0 0
+Object 00001: 0 0
+
+Object 00002: 4
+Object 00002: 0.9098 0.09016 1.054
+Object 00002: 1.054 0.09502 1.054
+Object 00002: 0 0 35
+Object 00002: -0.001962 -0.65 -0.003428
+Object 00002: 7
+Object 00002: Cool
+Object 00002: 1
+Object 00002: 0
+Object 00002: Tore0000
+Object 00002: -1
+Object 00002: 0
+Object 00002: 1 1 1
+Object 00002: 0 0 0
+Object 00002: 0 0 0
+Object 00002: 1
+Object 00002: 0
+Object 00002: 0
+Object 00002: 0 0
+Object 00002: 0
+Object 00002: 1
+Object 00002: 1
+Object 00002: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00002: 0000000000000
+Object 00002: 1 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: # 0 0 0 0 0 0 0 0
+Object 00002: 0 0
+
+Object 00003: 4
+Object 00003: 0.9098 0.09016 1.054
+Object 00003: 1.054 0.09502 1.054
+Object 00003: 0 0 325
+Object 00003: 0 0.65 0
+Object 00003: 7
+Object 00003: Cool
+Object 00003: 1
+Object 00003: 0
+Object 00003: Tore0001
+Object 00003: -1
+Object 00003: 0
+Object 00003: 1 1 1
+Object 00003: 0 0 0
+Object 00003: 0 0 0
+Object 00003: 1
+Object 00003: 0
+Object 00003: 0
+Object 00003: 0 0
+Object 00003: 0
+Object 00003: 1
+Object 00003: 1
+Object 00003: 0.00 0 0 0 0 0 0 0 0 0 0 0 0 0
+Object 00003: 0000000000000
+Object 00003: 1 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: # 0 0 0 0 0 0 0 0
+Object 00003: 0 0
+
+End of file: WALLTOR0.SCN
