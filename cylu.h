@@ -33,6 +33,7 @@
 
 #include "./maze.h"			//	CMaze object that contains the game
 							//	play maze
+#include "./objects.h"			//	Object numbers shared with CLD
 
 #define TEXT_STEP				12
 
@@ -99,35 +100,8 @@
 #define FALSE					0
 #endif
 
-#define OBJECT_FLOOR			0
-#define OBJECT_WALL				1
-#define OBJECT_SHIELD			2
-#define OBJECT_KEY				3
-#define OBJECT_TRANSPORT		4
-#define OBJECT_FUEL				5
-#define OBJECT_BASE				6
-#define OBJECT_CPU				7
-#define OBJECT_OBJECT			8
-#define OBJECT_RFL				9
-#define OBJECT_RTB				10
-#define OBJECT_DROID			12
-
-//	Attributes
-
-//	Walls, the attribute can range from 0 to MAX_WALL_ATTRIBUTE
-
-//	Object attributes
-#define ATTRIBUTE_SPHERE		0
-#define ATTRIBUTE_BOTTLE		1
-#define ATTRIBUTE_BOOK			2
-#define ATTRIBUTE_PENCIL		3
-
-#define ATTRIBUTE_DISK			4
-#define ATTRIBUTE_CALCULATOR	5
-
-//	Wall attributes
-//	The attribute number associates a wall type
-#define WALL_BORDER				0
+//	Object numbers, attributes and level sizes are shared with CLD
+//	see objects.h
 
 #ifndef _DESIGN_MODE_
 
@@ -147,12 +121,6 @@
 
 #endif
 
-//	Droid attributes
-#define DROID_NORTH				0
-#define DROID_EAST				1
-#define DROID_SOUTH				2
-#define DROID_WEST				3
-#define DROID_NONE				4
 
 //#define SHADE					0.638
 #ifndef _DESIGN_MODE_
@@ -178,8 +146,6 @@
 //	Chip attributes
 //	Each chip attribute has a number to an energy shield to disable
 
-#define DEFAULT_LEVEL_WIDTH		52
-#define DEFAULT_LEVEL_HEIGHT	66
 
 #define SPRITE_WIDTH			80
 #define SPRITE_HEIGHT			100

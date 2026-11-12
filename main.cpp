@@ -21,6 +21,7 @@
 #include <math.h>
 #include <time.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include <allegro5/allegro.h>
 
@@ -39,6 +40,11 @@
 BOOL g_bSound = TRUE;
 BOOL g_bRotate = TRUE;
 BOOL g_bVsync = TRUE;
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+char g_szLevelFile[ PATH_MAX ] = { LEVEL_FILE };	//	Level to play (-level overrides)
 #ifdef _DEBUG
 BOOL g_bFullscreen = FALSE;				//	Start in a window when debugging
 #else
@@ -375,6 +381,20 @@ int CmdLine( int argc, char **argv )
 			g_bFullscreen = FALSE;
 		if( StrICmp( argv[i], "-FULLSCREEN" ) == 0 )
 			g_bFullscreen = TRUE;
+
+		//	-level <file> plays a different level, e.g. one being tested
+		//	from CLD.  Made absolute now, because PlatformInit changes the
+		//	current folder to the one holding the executable.
+		if( StrICmp( argv[i], "-LEVEL" ) == 0 && i+1 < argc )
+		{
+			i++;
+#ifdef _WIN32
+			if( !_fullpath( g_szLevelFile, argv[i], sizeof( g_szLevelFile ) ) )
+#else
+			if( !realpath( argv[i], g_szLevelFile ) )
+#endif
+				snprintf( g_szLevelFile, sizeof( g_szLevelFile ), "%s", argv[i] );
+		}
 	}
 
 	return nRet;
@@ -546,10 +566,10 @@ int LoadLevel( void )
 	}
 
 	//	The level is stored in its own file (it used to be the LEVEL entry in cylu.dat)
-	if( !g_lpCMaze->LoadMaze( LEVEL_FILE ) )
+	if( !g_lpCMaze->LoadMaze( g_szLevelFile ) )
 	{
 		nRet = ERROR_LOADLEVEL;
-		snprintf( szLastError, sizeof( szLastError ), "Cannot load %s", LEVEL_FILE );
+		snprintf( szLastError, sizeof( szLastError ), "Cannot load %s", g_szLevelFile );
 		if( !g_bInitialised )
 			GfxTextf( 300, g_nTextY, COLOR_RED, "Failed: Unable To Load Level Data" );
 		goto function_exit;
@@ -1041,7 +1061,7 @@ int GoCylu( void )
 	}
 
 #ifdef _DESIGN_MODE_
-	if( !g_lpCMaze->SaveMaze( LEVEL_FILE ) )
+	if( !g_lpCMaze->SaveMaze( g_szLevelFile ) )
 		nRet = ERROR_SAVEMAZE;
 #endif
 

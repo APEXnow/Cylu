@@ -38,6 +38,7 @@ them under **Project Properties > Allegro 5**.
 | `-norotate` | Don't rotate the bouncy text and menu stars |
 | `-novsync` | Don't limit the frame rate to the 70Hz game clock |
 | `-nosound` | Reserved, as the game has no sound yet |
+| `-level <file>` | Play a different `.cld` level (CLD's "Test in Cylu" uses this) |
 
 **Alt+Enter** or **F11** switches between windowed and full screen. The game
 still renders at its original 640x480 and is scaled to fit, keeping the 4:3
@@ -45,6 +46,36 @@ aspect ratio. You can resize the window freely.
 
 Saved games are stored in `%APPDATA%\Apex\Cylu\savegame`. An old `savegame` from
 version 1.06 uses the same format and can be copied there.
+
+## CLD, the Cylu Level Designer
+
+`cld\` is the level editor, written with MFC in 1996 and brought back to life
+alongside the game. It's the second project in `Cylu.sln` and builds `cld.exe`
+into the same folder as `cylu.exe`.
+
+**It needs MFC.** In the Visual Studio Installer, choose **Modify**, then
+**Desktop development with C++**, and tick **C++ MFC for latest build tools
+(x86 & x64)**.
+
+To edit the game's level, open **`data\level.cld` in the repository**, not the
+copy in `bin\`. The build overwrites the copy in `bin\` every time.
+
+| Action | How |
+|---|---|
+| Place the selected object | Left click or drag (Place mode, **P**) |
+| Erase | Right click or drag, or Delete mode (**D**) |
+| Lines and boxes | **L** / **B** then drag; hold Shift for a filled box |
+| Choose an object | Object palette, **S** (Select Object), or Ctrl+click a tile on the map |
+| Change the attribute | **]** and **[** (wall type, forcefield number, teleporter number...) |
+| Undo / redo | Ctrl+Z / Ctrl+Y |
+| Zoom | Ctrl + mouse wheel, Ctrl++ and Ctrl+- |
+| Grid / attribute numbers | **G** / **A** |
+| Parse Level | **F7**: statistics plus a list of problems; double-click one to jump to it |
+| Test in Cylu | **F5**: plays the level being edited in the game, without saving it |
+
+Placing the droid moves it, because a level has exactly one starting point.
+`cld\levelcheck.cpp` holds the level checks. It's plain C++, so it can be
+tested away from MFC.
 
 ## Project layout
 
@@ -54,6 +85,8 @@ version 1.06 uses the same format and can be copied there.
 | `maze.*`, `anim.*`, `sprite.*` | Level storage and sprite animation (unchanged logic) |
 | `platform.*` | Allegro 5 layer: window, scaling, 70Hz clock, keyboard |
 | `gfx.*` | Drawing helpers and the sprite loader |
+| `objects.h` | Object numbers and attributes, shared by the game and CLD |
+| `cld\` | CLD, the level designer (MFC) |
 | `cyluobjs.h` | Sprite numbers (`CYLU_*`), matching `data\manifest.txt` |
 | `data\sprites\*.png` | The 187 sprites, converted from the old `cylu.dat` |
 | `data\level.cld` | The level map |

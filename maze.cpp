@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "maze.h"
 
@@ -33,6 +34,20 @@ CMaze::CMaze( int nWidth, int nHeight )
 {
 	InitialiseMembers();
 	Allocate( nWidth, nHeight );
+}
+
+CMaze::CMaze( const CMaze &Other )
+{
+	InitialiseMembers();
+	CopyFrom( Other );
+}
+
+CMaze& CMaze::operator=( const CMaze &Other )
+{
+	if( this != &Other )
+		CopyFrom( Other );
+
+	return *this;
 }
 
 CMaze::~CMaze()
@@ -56,15 +71,21 @@ void CMaze::Deallocate( void )
 	}
 }
 
+/*
+	Function:		Allocate
+	Description:	Allocates a maze of the given size with every cell set
+					to floor (object 0, attribute 0)
+*/
 int CMaze::Allocate( int nWidth, int nHeight )
 {
 	int bRet = false;
 
-	long lMemRequired = sizeof( CELL ) * ( nWidth * nHeight );
-
 	Deallocate();
 
-	m_lpCell = (CELL*)malloc( lMemRequired );
+	if( nWidth < 1 || nWidth > MAX_WIDTH || nHeight < 1 || nHeight > MAX_HEIGHT )
+		return bRet;
+
+	m_lpCell = (CELL*)calloc( (size_t)nWidth * (size_t)nHeight, sizeof( CELL ) );
 	if( m_lpCell )
 	{
 		m_nWidth = nWidth;
@@ -73,6 +94,26 @@ int CMaze::Allocate( int nWidth, int nHeight )
 	}
 
 	return bRet;
+}
+
+/*
+	Function:		CopyFrom
+	Description:	Makes this maze an exact copy of another
+*/
+int CMaze::CopyFrom( const CMaze &Other )
+{
+	if( !Other.m_lpCell )
+	{
+		Deallocate();
+		return true;
+	}
+
+	if( !Allocate( Other.m_nWidth, Other.m_nHeight ) )
+		return false;
+
+	memcpy( m_lpCell, Other.m_lpCell, sizeof( CELL ) * (size_t)m_nWidth * (size_t)m_nHeight );
+
+	return true;
 }
 
 int CMaze::CreateMaze( int nWidth, int nHeight )
@@ -115,10 +156,10 @@ int CMaze::SetCell( int nXPos, int nYPos, int nFlag, int nValue )
 	return bRet;
 }
 
-int CMaze::GetCell( int nXPos, int nYPos, int nFlag )
+int CMaze::GetCell( int nXPos, int nYPos, int nFlag ) const
 {
 	int nRet = 0;
-	CELL *lpCell;
+	const CELL *lpCell;
 
 	if( m_lpCell )
 	{
@@ -142,121 +183,136 @@ int CMaze::GetCell( int nXPos, int nYPos, int nFlag )
 	return nRet;
 }
 
-void CMaze::GetMazeSize( int *lpnWidth, int *lpnHeight )
+void CMaze::GetMazeSize( int *lpnWidth, int *lpnHeight ) const
 {
 	*lpnWidth = m_nWidth;
 	*lpnHeight = m_nHeight;
 }
 
+/*
+	Function:		LoadMaze
+	Inputs:			lpszMazeName		- File name
+					pExtraData			- Optional buffer for data stored
+										  after the maze (saved games)
+					nSize				- Size of pExtraData
+	Output:			true on success
+
+	Description:	Loads a .CLD level.  The format, unchanged since 1996, is
+					three ints (FILE_ID, width, height) followed by an
+					object and attribute int for each cell, row by row.
+*/
 int CMaze::LoadMaze( const char *lpszMazeName, void *pExtraData, int nSize )
 {
 	int bRet = false;
-
-	int nFileDescriptor = FILE_ID;
-	int nWidth;
-	int nHeight;
-	int nLoopx;
-	int nLoopy;
-	int nBuff;
 	FILE *pFileID;
 
 	pFileID = fopen( lpszMazeName, "rb" );
 	if( !pFileID )
-		goto function_exit;
-
-	Deallocate();
-
-	if( pFileID )
 	{
-		fread( (int*)&nFileDescriptor, sizeof( int ), 1, pFileID );
-		fread( (int*)&nWidth, sizeof( int ), 1, pFileID );
-		fread( (int*)&nHeight, sizeof( int ), 1, pFileID );
-
-		if( nFileDescriptor!=FILE_ID )
-		{
-			printf( "Not a CLD descriptor\n" );
-			fclose( pFileID );
-			return bRet;
-		}
-		else
-		{
-			if( Allocate( nWidth, nHeight ) )
-			{
-				for( nLoopy=0; nLoopy<nHeight; nLoopy++ )
-				{
-					for( nLoopx=0; nLoopx<nWidth; nLoopx++ )
-					{
-						fread( (void*)&nBuff, sizeof( int ), 1, pFileID );
-						SetCell( nLoopx, nLoopy, CELL_OBJECT, nBuff );
-
-						fread( (void*)&nBuff, sizeof( int ), 1, pFileID );
-						SetCell( nLoopx, nLoopy, CELL_ATTRIBUTE, nBuff );
-					}
-				}
-			}
-		}
-
-		//	Check if there is extra data to be loaded
-		if( pExtraData )
-			fread( pExtraData, nSize, 1, pFileID );
-
-		bRet = true;
-
-		fclose( pFileID );
-		pFileID = 0;
-	}
-	else
 		printf( "Failed to load CLD maze file\n" );
+		return bRet;
+	}
 
-function_exit:
+	bRet = ReadMaze( pFileID, pExtraData, nSize );
+
+	fclose( pFileID );
 
 	return bRet;
+}
+
+/*
+	Function:		ReadMaze
+	Description:	Reads a level from an open file (see LoadMaze).  The maze
+					is left unchanged if the file is not a valid level.
+*/
+int CMaze::ReadMaze( FILE *pFileID, void *pExtraData, int nSize )
+{
+	int nHeader[3];
+	int nCount;
+	CMaze Loaded;
+
+	if( !pFileID )
+		return false;
+
+	if( fread( nHeader, sizeof( int ), 3, pFileID ) != 3 )
+		return false;
+
+	if( nHeader[0] != FILE_ID )
+	{
+		printf( "Not a CLD descriptor\n" );
+		return false;
+	}
+
+	if( !Loaded.Allocate( nHeader[1], nHeader[2] ) )
+		return false;
+
+	//	CELL is two ints (object, attribute), matching the file layout
+	nCount = nHeader[1] * nHeader[2];
+	if( fread( Loaded.m_lpCell, sizeof( CELL ), (size_t)nCount, pFileID ) != (size_t)nCount )
+		return false;
+
+	//	Check if there is extra data to be loaded
+	if( pExtraData && nSize > 0 )
+	{
+		if( fread( pExtraData, (size_t)nSize, 1, pFileID ) != 1 )
+			return false;
+	}
+
+	return CopyFrom( Loaded );
 }
 
 int CMaze::SaveMaze( const char *lpszMazeName, void *pExtraData, int nSize )
 {
 	int bRet = false;
-
-	int nFileDescriptor = FILE_ID;
-	int nLoopx;
-	int nLoopy;
-	int nBuff;
 	FILE *pFileID;
 
 	pFileID = fopen( lpszMazeName, "wb" );
 
 	if( pFileID )
 	{
-		fwrite( (int*)&nFileDescriptor, sizeof( int ), 1, pFileID );
-		fwrite( (int*)&m_nWidth, sizeof( int ), 1, pFileID );
-		fwrite( (int*)&m_nHeight, sizeof( int ), 1, pFileID );
+		bRet = WriteMaze( pFileID, pExtraData, nSize );
 
-		for( nLoopy=0; nLoopy<m_nHeight; nLoopy++ )
-		{
-			for( nLoopx=0; nLoopx<m_nWidth; nLoopx++ )
-			{
-				nBuff = GetCell( nLoopx, nLoopy, CELL_OBJECT );
-				fwrite( (void*)&nBuff, sizeof( int ), 1, pFileID );
-
-				nBuff = GetCell( nLoopx, nLoopy, CELL_ATTRIBUTE );
-				fwrite( (void*)&nBuff, sizeof( int ), 1, pFileID );
-			}
-		}
-
-		//	Check if extra data is needed saving
-		if(	pExtraData )
-			fwrite( pExtraData, nSize, 1, pFileID );
-
-		fclose( pFileID );
-		pFileID = 0;
-
-		bRet = true;
+		if( fclose( pFileID ) != 0 )
+			bRet = false;
 	}
 
 	return bRet;
 }
 
-int CMaze::ValidMaze( void )
+/*
+	Function:		WriteMaze
+	Description:	Writes the level to an open file (see LoadMaze for the format)
+*/
+int CMaze::WriteMaze( FILE *pFileID, void *pExtraData, int nSize ) const
+{
+	int nHeader[3];
+	size_t nCount;
+
+	if( !pFileID || !m_lpCell )
+		return false;
+
+	nHeader[0] = FILE_ID;
+	nHeader[1] = m_nWidth;
+	nHeader[2] = m_nHeight;
+
+	if( fwrite( nHeader, sizeof( int ), 3, pFileID ) != 3 )
+		return false;
+
+	nCount = (size_t)m_nWidth * (size_t)m_nHeight;
+	if( fwrite( m_lpCell, sizeof( CELL ), nCount, pFileID ) != nCount )
+		return false;
+
+	//	Check if extra data is needed saving
+	if(	pExtraData && nSize > 0 )
+	{
+		if( fwrite( pExtraData, (size_t)nSize, 1, pFileID ) != 1 )
+			return false;
+	}
+
+	return true;
+}
+
+int CMaze::ValidMaze( void ) const
 {
 	int bRet = false;
 

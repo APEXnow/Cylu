@@ -30,6 +30,7 @@
     <ClInclude Include="cyluobjs.h"><Filter>Header Files</Filter></ClInclude>
     <ClInclude Include="error.h"><Filter>Header Files</Filter></ClInclude>
     <ClInclude Include="maze.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="objects.h"><Filter>Header Files</Filter></ClInclude>
     <ClInclude Include="sprite.h"><Filter>Header Files</Filter></ClInclude>
     <ClInclude Include="gfx.h"><Filter>Platform</Filter></ClInclude>
     <ClInclude Include="platform.h"><Filter>Platform</Filter></ClInclude>

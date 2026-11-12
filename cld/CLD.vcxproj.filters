@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{9E0EBE64-3487-4A14-8364-139AF8EA80D3}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{E1F629A6-3A60-48C1-AA2C-B7F0872FC5F9}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx</Extensions>
+    </Filter>
+    <Filter Include="Shared with Cylu">
+      <UniqueIdentifier>{7B3E5A10-2C4D-4E8F-9A1B-6C2D3E4F5A6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CLD.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="CLDDoc.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="CLDView.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="levelcheck.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="MainFrm.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="NewMazeDlg.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="ParseDlg.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="SelectObjDlg.cpp"><Filter>Source Files</Filter></ClCompile>
+    <ClCompile Include="..\maze.cpp"><Filter>Shared with Cylu</Filter></ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CLD.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="CLDDoc.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="CLDView.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="levelcheck.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="MainFrm.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="NewMazeDlg.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="ParseDlg.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="resource.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="SelectObjDlg.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="stdafx.h"><Filter>Header Files</Filter></ClInclude>
+    <ClInclude Include="..\maze.h"><Filter>Shared with Cylu</Filter></ClInclude>
+    <ClInclude Include="..\objects.h"><Filter>Shared with Cylu</Filter></ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CLD.rc"><Filter>Resource Files</Filter></ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\CLD.ico"><Filter>Resource Files</Filter></Image>
+    <Image Include="res\CLDDoc.ico"><Filter>Resource Files</Filter></Image>
+    <Image Include="res\tiles.bmp"><Filter>Resource Files</Filter></Image>
+    <Image Include="res\toolbar.bmp"><Filter>Resource Files</Filter></Image>
+  </ItemGroup>
+</Project>

@@ -5,6 +5,8 @@ VisualStudioVersion = 18.0.11205.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cylu", "Cylu.vcxproj", "{37196CA7-D94C-4751-8E7A-FF4EDA5D1161}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLD", "cld\CLD.vcxproj", "{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F73478AF-E20A-4CBC-8545-FB5932687EF5}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -21,6 +23,10 @@ Global
 		{37196CA7-D94C-4751-8E7A-FF4EDA5D1161}.Debug|x64.Build.0 = Debug|x64
 		{37196CA7-D94C-4751-8E7A-FF4EDA5D1161}.Release|x64.ActiveCfg = Release|x64
 		{37196CA7-D94C-4751-8E7A-FF4EDA5D1161}.Release|x64.Build.0 = Release|x64
+		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Debug|x64.ActiveCfg = Debug|x64
+		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Debug|x64.Build.0 = Debug|x64
+		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Release|x64.ActiveCfg = Release|x64
+		{3C6AB867-D363-449F-BEC5-A5F5346EDDCD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -63,7 +63,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)obj\$(Platform)\$(Configuration)\cylu\</IntDir>
     <TargetName>cylu</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,6 +128,7 @@
     <ClInclude Include="error.h" />
     <ClInclude Include="gfx.h" />
     <ClInclude Include="maze.h" />
+    <ClInclude Include="objects.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="sprite.h" />
   </ItemGroup>

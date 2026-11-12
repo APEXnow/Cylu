@@ -1,0 +1,359 @@
+// Resource script for CLD, the Cylu Level Designer
+// (C) 1996-2026 Paul S.J.Millard
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#include ""afxres.rc""      // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+
+IDR_MAINFRAME           ICON                    "res\\CLD.ico"
+IDR_CLDTYPE             ICON                    "res\\CLDDoc.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+// tiles.bmp   - the 1996 20x20 map tiles, objects 1 (wall) to 12 (droid)
+// toolbar.bmp - 16x16 toolbar images, magenta is transparent
+
+IDB_TILES               BITMAP                  "res\\tiles.bmp"
+IDB_TOOLBAR             BITMAP                  "res\\toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM "&Redo\tCtrl+Y",               ID_EDIT_REDO
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "New &Dimensions...",          IDM_NEW_DIMENSIONS
+        MENUITEM SEPARATOR
+        MENUITEM "&Place Object\tP",            IDM_PLACE_OBJECT
+        MENUITEM "&Delete Object\tD",           IDM_DELETE_OBJECT
+        MENUITEM "&Select Object...\tS",        IDM_SELECT_OBJECT
+        MENUITEM SEPARATOR
+        MENUITEM "Draw &Box\tB",                IDM_DRAW_BOX
+        MENUITEM "Draw &Line\tL",               IDM_DRAW_LINE
+        MENUITEM SEPARATOR
+        MENUITEM "&Next Attribute\t]",          IDM_ATTRIB_UP
+        MENUITEM "P&revious Attribute\t[",      IDM_ATTRIB_DOWN
+        MENUITEM SEPARATOR
+        MENUITEM "Parse Le&vel\tF7",            IDM_PARSE_LEVEL
+        MENUITEM "&Test in Cylu\tF5",           IDM_TEST_LEVEL
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "Object &Palette",             ID_VIEW_PALETTE
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM SEPARATOR
+        MENUITEM "Cell &Grid\tG",               IDM_SCREEN_GRID
+        MENUITEM "Object &Attributes\tA",       IDM_OBJECT_ATTRIBUTES
+        MENUITEM SEPARATOR
+        MENUITEM "Zoom &In\tCtrl++",            IDM_ZOOM_IN
+        MENUITEM "Zoom &Out\tCtrl+-",           IDM_ZOOM_OUT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About CLD...",               ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+// 0xBB / 0xBD are the main keyboard + and - keys, 0x6B / 0x6D the keypad
+// ones, 0xDB / 0xDD are [ and ]
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    "Y",            ID_EDIT_REDO,           VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_REDO,           VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "P",            IDM_PLACE_OBJECT,       VIRTKEY, NOINVERT
+    "D",            IDM_DELETE_OBJECT,      VIRTKEY, NOINVERT
+    "S",            IDM_SELECT_OBJECT,      VIRTKEY, NOINVERT
+    "B",            IDM_DRAW_BOX,           VIRTKEY, NOINVERT
+    "L",            IDM_DRAW_LINE,          VIRTKEY, NOINVERT
+    "G",            IDM_SCREEN_GRID,        VIRTKEY, NOINVERT
+    "A",            IDM_OBJECT_ATTRIBUTES,  VIRTKEY, NOINVERT
+    0xDD,           IDM_ATTRIB_UP,          VIRTKEY, NOINVERT
+    0xDB,           IDM_ATTRIB_DOWN,        VIRTKEY, NOINVERT
+    0xBB,           IDM_ZOOM_IN,            VIRTKEY, CONTROL, NOINVERT
+    0x6B,           IDM_ZOOM_IN,            VIRTKEY, CONTROL, NOINVERT
+    0xBD,           IDM_ZOOM_OUT,           VIRTKEY, CONTROL, NOINVERT
+    0x6D,           IDM_ZOOM_OUT,           VIRTKEY, CONTROL, NOINVERT
+    VK_F5,          IDM_TEST_LEVEL,         VIRTKEY, NOINVERT
+    VK_F7,          IDM_PARSE_LEVEL,        VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 250, 92
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About CLD"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,12,14,20,20
+    LTEXT           "CLD - Cylu Level Designer, Version 2.0",IDC_STATIC,44,12,196,9,SS_NOPREFIX
+    LTEXT           "Copyright (C) 1996-2026 Paul S.J.Millard",IDC_STATIC,44,24,196,9
+    LTEXT           "Written in 1996 with Visual C++ 4 and MFC.",IDC_STATIC,44,40,196,9
+    LTEXT           "Brought back to life in 2026 for Visual Studio 2026.",IDC_STATIC,44,50,196,9
+    DEFPUSHBUTTON   "OK",IDOK,190,71,50,14,WS_GROUP
+END
+
+IDD_NEWMAZE DIALOGEX 0, 0, 204, 124
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "New Maze"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,7,7,190,87
+    LTEXT           "This replaces the level with a new, empty one with a wall all the way round. Enter the size (3 to 100) and select OK when ready.",
+                    IDC_STATIC,13,14,178,27
+    RTEXT           "Width",IDC_STATIC,40,46,40,9
+    EDITTEXT        IDC_EDIT_WIDTH,84,44,40,13,ES_AUTOHSCROLL | ES_NUMBER
+    RTEXT           "Height",IDC_STATIC,40,64,40,9
+    EDITTEXT        IDC_EDIT_HEIGHT,84,62,40,13,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,49,103,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,105,103,50,14
+END
+
+IDD_SELECT_OBJECT DIALOGEX 0, 0, 190, 112
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Object"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Object",IDC_STATIC,7,9,40,9
+    COMBOBOX        IDC_OBJECT_COMBO,52,7,131,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Attribute",IDC_STATIC,7,31,40,9
+    EDITTEXT        IDC_ATTRIB_EDIT,52,29,40,13,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_ATTRIB_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_NOTHOUSANDS,92,29,10,13
+    LTEXT           "",IDC_ATTRIB_HINT,52,47,131,20
+    LTEXT           "Tip: pick objects from the palette, use [ and ] to change the attribute, or Ctrl+click a tile to copy it.",
+                    IDC_STATIC,7,68,176,18
+    DEFPUSHBUTTON   "OK",IDOK,78,91,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,133,91,50,14
+END
+
+IDD_PARSER DIALOGEX 0, 0, 380, 190
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Parse Level"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    LTEXT           "Statistics",IDC_STATIC,7,7,100,9
+    LTEXT           "",IDC_STATISTICS,7,18,100,146,SS_SUNKEN
+    LTEXT           "Problems (double-click to show one on the map)",IDC_STATIC,114,7,259,9
+    LISTBOX         IDC_ISSUES,114,18,259,146,LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Go To",IDOK,268,169,50,14
+    PUSHBUTTON      "Close",IDCANCEL,323,169,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,0
+ PRODUCTVERSION 2,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904B0"
+        BEGIN
+            VALUE "CompanyName", "Apex"
+            VALUE "FileDescription", "CLD - Cylu Level Designer"
+            VALUE "FileVersion", "2.0.0.0"
+            VALUE "InternalName", "CLD"
+            VALUE "LegalCopyright", "Copyright (C) 1996-2026 Paul S.J.Millard"
+            VALUE "OriginalFilename", "cld.exe"
+            VALUE "ProductName", "Cylu"
+            VALUE "ProductVersion", "2.0.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "CLD\n\nCylu Level\nCylu Levels (*.cld)\n.cld\nCLD.Level\nCylu Level"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "CLD"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_CELL       "  100, 100   Return To Base 30  "
+    ID_INDICATOR_SELECTED   "  Place: Return To Base 30  "
+END
+
+STRINGTABLE
+BEGIN
+    IDM_NEW_DIMENSIONS      "Create a new, empty level of any size\nNew Dimensions"
+    IDM_PLACE_OBJECT        "Place the selected object (click or drag; right button erases; Ctrl+click copies a tile)\nPlace Object (P)"
+    IDM_DELETE_OBJECT       "Delete objects from the level (click or drag)\nDelete Object (D)"
+    IDM_SELECT_OBJECT       "Choose the object and attribute to place\nSelect Object (S)"
+    IDM_DRAW_BOX            "Drag out a box of the selected object (hold Shift for a filled box)\nDraw Box (B)"
+    IDM_DRAW_LINE           "Drag out a straight line of the selected object\nDraw Line (L)"
+    IDM_OBJECT_ATTRIBUTES   "Show the attribute numbers on the map\nObject Attributes (A)"
+    IDM_PARSE_LEVEL         "Count the objects and check the level for anything that would stop it playing\nParse Level (F7)"
+    IDM_SCREEN_GRID         "Show lines between the cells\nCell Grid (G)"
+    IDM_ZOOM_IN             "Make the tiles bigger (or Ctrl+mouse wheel)\nZoom In"
+    IDM_ZOOM_OUT            "Make the tiles smaller (or Ctrl+mouse wheel)\nZoom Out"
+    IDM_TEST_LEVEL          "Play this level in Cylu without saving it\nTest in Cylu (F5)"
+    IDM_ATTRIB_UP           "Next attribute for the selected object\nNext Attribute (])"
+    IDM_ATTRIB_DOWN         "Previous attribute for the selected object\nPrevious Attribute ([)"
+END
+
+STRINGTABLE
+BEGIN
+    ID_VIEW_PALETTE         "Show or hide the object palette\nToggle Object Palette"
+END
+
+STRINGTABLE
+BEGIN
+    33001                   "Place walls (attribute: wall type 0-15)\nWall"
+    33002                   "Place forcefields (attribute: forcefield number)\nForcefield"
+    33003                   "Place teleporter keys (attribute: teleporter they open)\nKey"
+    33004                   "Place teleporters (attribute: teleporter number)\nTeleporter"
+    33005                   "Place fuel cells\nFuel"
+    33006                   "Place the base computer\nBase"
+    33007                   "Place CPU chips (attribute: forcefield they disable)\nCPU"
+    33008                   "Place objects to collect (attribute: object type 0-4)\nObject"
+    33009                   "Place Refuel At Base\nRefuel At Base"
+    33010                   "Place Return To Base\nReturn To Base"
+    33011                   "Place trees (1996 version only; not drawn by the current game)\nTree"
+    33012                   "Place the droid's starting position (attribute: direction it faces)\nDroid"
+END
+
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#include "afxres.rc"      // Standard components
+#endif
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
