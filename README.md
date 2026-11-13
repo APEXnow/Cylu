@@ -26,7 +26,7 @@ The 1996 original (MFC/WinG) and its level designer, CLD, are kept in
 The build copies the `data\` folder next to the exe. To run the game somewhere
 else, copy `cylu.exe` and `data\` together (plus the Allegro DLLs in Debug).
 
-The Allegro add-ons used are Image, Font, Primitives and Dialog. You can change
+The Allegro add-ons used are Image, Font, Primitives, Dialog, Audio and Audio Codec. You can change
 them under **Project Properties > Allegro 5**.
 
 ## Running
@@ -37,7 +37,7 @@ them under **Project Properties > Allegro 5**.
 | `-fullscreen` | Start full screen |
 | `-norotate` | Don't rotate the bouncy text and menu stars |
 | `-novsync` | Don't limit the frame rate to the 70Hz game clock |
-| `-nosound` | Reserved, as the game has no sound yet |
+| `-nosound` | Play without sound effects (**M** also turns them on and off) |
 | `-level <file>` | Play a different `.cld` level (CLD's "Test in Cylu" uses this) |
 
 **Alt+Enter** or **F11** switches between windowed and full screen. The game
@@ -46,6 +46,19 @@ aspect ratio. You can resize the window freely.
 
 Saved games are stored in `%APPDATA%\Apex\Cylu\savegame`. An old `savegame` from
 version 1.06 uses the same format and can be copied there.
+
+## Sound effects
+
+The game had no sound until 2026. The effects in `data\sounds\*.wav` are
+original, synthesised by `tools\make_sounds.py` (Python and numpy, in the style
+of sfxr), so they can be tweaked and regenerated:
+
+    python tools\make_sounds.py
+
+Each effect is a short recipe in that script: step, bump, pickup, drop, deposit,
+forcefield_off, teleport, refuel, fuel_low, menu_move, menu_select, whoosh,
+game_over and win. `sound.cpp` plays them with Allegro's audio add-on. If
+there's no audio device, the game carries on silently.
 
 ## CLD, the Cylu Level Designer
 
@@ -118,5 +131,7 @@ used at the base computer: stand on the start square facing north. Run
   transparency. They're now PNGs with an alpha channel. `draw_lit_rle_sprite`
   (used to fade the edges of the map while scrolling) is reproduced with a
   tinted draw.
+* Fuel drops one unit every 300ms (`FUEL_SPEED_MS` in `cylu.h`), the same
+  rate as the 1996 game, so a full tank of 600 lasts 3 minutes.
 * `cylu.dat` has been retired. It can still be found in the Git history
   (baseline commit) if you ever need to re-run the converter.

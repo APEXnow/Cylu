@@ -186,7 +186,13 @@
 
 #define FUEL_INIT				600
 #define FUEL_RENEW				400
-#define FUEL_SPEED				15
+//	Fuel drops by one unit every FUEL_SPEED_MS milliseconds.  300 matches the
+//	1996 game (one unit every other 150ms tick); 2001 used about 229ms.
+#define FUEL_SPEED_MS			300
+#define FUEL_SPEED				( FUEL_SPEED_MS * GAME_TICKS_PER_SECOND / 1000 )
+
+//	Shortest gap between bump sounds while walking into a wall (game ticks)
+#define BUMP_SOUND_TICKS		25
 
 #define NO_OBJECT				-1
 #define NO_ATTRIB				-1

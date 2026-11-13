@@ -27,6 +27,7 @@
 
 #include "./platform.h"
 #include "./gfx.h"
+#include "./sound.h"
 #include "./cylu.h"
 #include "./sprite.h"
 #include "./anim.h"
@@ -515,10 +516,14 @@ int Initialise( void )
 
 		if( InitSound() )
 		{
-			nRet = ERROR_SOUND;
+			//	No sound isn't fatal: carry on silently
 			if( !g_bInitialised )
-				GfxTextf( 300, g_nTextY, COLOR_WHITE, "%s", szLastError );
-			goto function_exit;
+			{
+				GfxTextf( 300, g_nTextY, COLOR_RED, "Not available (%s)", szLastError );
+				g_nTextY = g_nTextY + TEXT_STEP;
+			}
+			szLastError[0] = '\0';
+			g_bSound = FALSE;
 		}
 		else
 		{
@@ -671,6 +676,7 @@ void Terminate( void )
 		al_destroy_bitmap( g_pCopy );
 	g_pCopy = NULL;
 
+	SoundShutdown();
 	PlatformShutdown();
 }
 
@@ -715,13 +721,15 @@ function_exit:
 	Inputs:			None
 	Output:			Error Code
 
-	Description:	Initialises the sound engine.  The game has never had
-					sound effects or music (see readme.txt), so for now this
-					is a placeholder for the Allegro 5 audio add-on.
+	Description:	Initialises the sound engine and loads the effects
+					from data/sounds (see sound.cpp).  -nosound skips this.
 */
 int InitSound( void )
 {
 	int nRet = 0;
+
+	if( !SoundInit( szLastError, sizeof( szLastError ) ) )
+		nRet = ERROR_SOUND;
 
 	return nRet;
 }
@@ -929,6 +937,9 @@ int GoCylu( void )
 					if( nKey == ALLEGRO_KEY_ENTER )
 						g_nCurCmd = COMMAND_EXECUTE;
 
+					if( nKey == ALLEGRO_KEY_M )
+						SoundToggleMute();
+
 					if( g_bMenu )
 					{
 						if( nKey == ALLEGRO_KEY_UP )
@@ -1088,18 +1099,21 @@ int Process( void )
 		switch( g_nCurCmd )
 		{
 			case COMMAND_UP:
+				SoundPlay( SND_MENU_MOVE );
 				g_nMenuPos--;
 				if( g_nMenuPos < 0 ) g_nMenuPos = 3;
 				PlaceCursors( g_nMenuPos );
 				g_nCurCmd = COMMAND_NONE;
 				break;
 			case COMMAND_DOWN:
+				SoundPlay( SND_MENU_MOVE );
 				g_nMenuPos++;
 				if( g_nMenuPos > 3 ) g_nMenuPos = 0;
 				PlaceCursors( g_nMenuPos );
 				g_nCurCmd = COMMAND_NONE;
 				break;
 			case COMMAND_EXECUTE:
+				SoundPlay( SND_MENU_SELECT );
 				if( g_enuGameState != ePlay )
 				{
 					switch( g_nMenuPos )
@@ -1152,6 +1166,7 @@ int Process( void )
 						case 1:
 							g_nMenuPos = 0;
 							g_bMenu = FALSE;
+							g_nCurCmd = COMMAND_NONE;		//	Don't also use the pocket object
 #ifdef _SHAREWARE_
 							ResetBouncyText();
 							PlaceBouncyText( "NOT YET", GRX_WIDTH/2, 60, 1 );
@@ -1177,6 +1192,7 @@ int Process( void )
 						case 2:
 							g_nMenuPos = 0;
 							g_bMenu = FALSE;
+							g_nCurCmd = COMMAND_NONE;		//	Don't also use the pocket object
 #ifdef _SHAREWARE_
 							ResetBouncyText();
 							PlaceBouncyText( "NOT YET", GRX_WIDTH/2, 60, 1 );
@@ -1216,6 +1232,7 @@ int Process( void )
 			switch( g_nCurCmd )
 			{
 				case COMMAND_EXECUTE:
+					SoundPlay( SND_MENU_SELECT );
 					g_bMenu = TRUE;
 					g_enuGameState = eTitle;
 					break;
@@ -1225,6 +1242,7 @@ int Process( void )
 			switch( g_nCurCmd )
 			{
 				case COMMAND_EXECUTE:
+					SoundPlay( SND_MENU_SELECT );
 					g_nCurPage++;
 					if( g_nCurPage > g_nTotalPages-1 )
 					{
@@ -1310,7 +1328,14 @@ int Process( void )
 						{
 							case OBJECT_KEY:
 								if( nObjectInFront == OBJECT_TRANSPORT )
+								{
+									nX = g_nDroidX;
+									nY = g_nDroidY;
 									Transport( nAttrib );
+									if( g_nDroidX != nX || g_nDroidY != nY )
+										SoundPlay( SND_TELEPORT );
+									SetDirection( nX, nY );
+								}
 								break;
 
 							case OBJECT_FUEL:
@@ -1321,6 +1346,7 @@ int Process( void )
 #else
 								g_nFuel = FUEL_RENEW;
 								SetPocket( NO_OBJECT, NO_ATTRIB, g_nPocket );
+								SoundPlay( SND_REFUEL );
 #endif
 								break;
 
@@ -1329,6 +1355,7 @@ int Process( void )
 								{
 									DisableShield( nAttrib );
 									SetPocket( NO_OBJECT, NO_ATTRIB, g_nPocket );
+									SoundPlay( SND_FORCEFIELD_OFF );
 
 									sprintf( szWork, "%d", nAttrib );
 
@@ -1349,7 +1376,12 @@ int Process( void )
 
 									//	If all objects are deposited
 									if( g_nObjects == g_nMaxObjects )
+									{
 										g_enuGameState = eWin;
+										SoundPlay( SND_WIN );
+									}
+									else
+										SoundPlay( SND_DEPOSIT );
 								}
 								break;
 
@@ -1360,7 +1392,10 @@ int Process( void )
 								g_nExamineTimer = g_nTimer + 360;
 #else
 								if( nObjectInFront == OBJECT_BASE )
+								{
 									g_nFuel = FUEL_RENEW;
+									SoundPlay( SND_REFUEL );
+								}
 #endif
 								break;
 
@@ -1374,6 +1409,7 @@ int Process( void )
 
 								g_lpCMaze->SetCell( g_nDroidX, g_nDroidY, CELL_OBJECT, OBJECT_DROID );
 								g_lpCMaze->SetCell( g_nDroidX, g_nDroidY, CELL_ATTRIBUTE, g_nDroidDir );
+								SoundPlay( SND_TELEPORT );
 								break;
 						}
 
@@ -1389,8 +1425,16 @@ int Process( void )
 				{
 					if( g_lpCMaze->GetCell( g_nDroidX + nX, g_nDroidY + nY, CELL_OBJECT ) )
 					{
+						static int nLastBump = -1000;
+
 						g_lpCMaze->SetCell( g_nDroidX, g_nDroidY, CELL_ATTRIBUTE, g_nDroidDir );
 						g_bMoving = FALSE;
+
+						if( g_nTimer - nLastBump >= BUMP_SOUND_TICKS )
+						{
+							SoundPlay( SND_BUMP );
+							nLastBump = g_nTimer;
+						}
 					}
 					else
 					{
@@ -1530,6 +1574,7 @@ int Actions( void )
 			g_fShadeStep = 0;
 
 			g_nPaces++;
+			SoundPlay( SND_STEP );
 
 			g_lpCMaze->SetCell( g_nDroidX, g_nDroidY, CELL_OBJECT, 0 );
 
@@ -1550,14 +1595,20 @@ int Actions( void )
 	*/
 	if( g_enuGameState == ePlay && !g_bMenu )
 	{
-		if( g_nTimer > nFuelTimer + FUEL_SPEED )
+		//	One unit every FUEL_SPEED_MS, the rate of the 1996 game
+		if( g_nTimer >= nFuelTimer + FUEL_SPEED )
 		{
 			g_nFuel--;
+
+			if( g_nFuel == FUEL_INIT / 6 || g_nFuel == FUEL_INIT / 12 || g_nFuel == FUEL_INIT / 24 )
+				SoundPlay( SND_FUEL_LOW );		//	Warnings at 100, 50 and 25
+
 			if( g_nFuel<1 )
 			{
 				g_bMenu = FALSE;
 				g_enuGameState = eEnd;
 				g_enuStatState = eDown;
+				SoundPlay( SND_GAME_OVER );
 				goto function_exit;
 			}
 
@@ -1588,6 +1639,7 @@ int Actions( void )
 	switch( g_nAction )
 	{
 		case ACTION_SELECT:
+			SoundPlay( SND_MENU_MOVE );
 			g_nPocket++;
 			if( g_nPocket>4 ) g_nPocket = 0;
 			break;
@@ -1601,6 +1653,7 @@ int Actions( void )
 				g_lpCMaze->SetCell( g_nDroidX + nX, g_nDroidY + nY, CELL_ATTRIBUTE, nAttrib );
 
 				SetPocket( NO_OBJECT, NO_ATTRIB, g_nPocket );
+				SoundPlay( SND_DROP );
 			}
 			break;
 
@@ -1623,6 +1676,7 @@ int Actions( void )
 				case OBJECT_RFL:
 				case OBJECT_RTB:
 					SetPocket( nObject, nAttrib, g_nPocket );
+					SoundPlay( SND_PICKUP );
 
 					g_lpCMaze->SetCell( g_nDroidX + nX, g_nDroidY + nY, CELL_OBJECT, 0 );
 					g_lpCMaze->SetCell( g_nDroidX + nX, g_nDroidY + nY, CELL_ATTRIBUTE, 0 );
@@ -2133,13 +2187,16 @@ int ShowInstructions( void )
 			GfxText( "                     Or examine the forcefield you're facing",
 			70, 280, COLOR_GREEN );
 
+			GfxText( "<M>                  Turn the sound on or off",
+			70, 300, COLOR_YELLOW );
+
 			//	Other details
 			GfxText( "During the game, pressing <ESC> will bring up the menu.",
-			70, 300, COLOR_YELLOW );
-			GfxText( "Here you have the choice of saving your game, or loading",
-			70, 310, COLOR_YELLOW );
-			GfxText( "a previously saved game.",
 			70, 320, COLOR_YELLOW );
+			GfxText( "Here you have the choice of saving your game, or loading",
+			70, 330, COLOR_YELLOW );
+			GfxText( "a previously saved game.",
+			70, 340, COLOR_YELLOW );
 
 			break;
 	}
@@ -2482,6 +2539,10 @@ int PlaceBouncyText( const char *szText, int nX, int nY, int nAllign )
 
 		j++;
 	}
+
+	//	The first line of a new set of bouncy text flies in with a whoosh
+	if( g_nCursors == 0 )
+		SoundPlay( SND_WHOOSH );
 
 	/*
 		Now apply random selections for each halo cursor to one
